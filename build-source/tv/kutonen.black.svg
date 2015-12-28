@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" height="600" width="600" version="1.1" viewBox="0 0 158.75 158.75">
+  <defs>
+    <linearGradient id="a" gradientUnits="userSpaceOnUse" gradientTransform="matrix(70.509 -49.375 49.371 70.514 58.919 180.91)" x1="0" x2="1" y1="0" y2="0">
+      <stop stop-color="#3ac0f0" offset="0"/>
+      <stop stop-color="#3ac0f0" offset=".039199"/>
+      <stop stop-color="#71ccd4" offset=".94789"/>
+      <stop stop-color="#71ccd4" offset="1"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(-15.119 -77.018)">
+    <path d="m94.525 235.77-79.406-79.35 79.356-79.402 79.395 79.342z" fill="#010101"/>
+    <path fill="url(#a)" d="m67.658 134.53c-7.621 7.09-13.086 17.17-13.086 28.53 0 20.48 16.671 37.08 37.24 37.08 20.558 0 37.238-16.6 37.238-37.08 0-15.91-10.04-29.48-24.16-34.74l13.11-13.11-15.52-15.329zm8.899 28.49c0-8.41 6.844-15.23 15.28-15.23 8.453 0 15.303 6.82 15.303 15.23 0 8.44-6.85 15.25-15.303 15.25-8.436 0-15.28-6.81-15.28-15.25"/>
+  </g>
+</svg>

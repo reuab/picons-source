@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" height="148.15" width="600.02" version="1.1">
+  <defs>
+    <linearGradient id="linearGradient4155" gradientUnits="userSpaceOnUse" gradientTransform="matrix(207.94596,0,0,207.94596,331.0467,-302.19097)" x1="0" x2="1" y1="0" y2="0">
+      <stop stop-color="#FFF" offset="0"/>
+      <stop stop-color="#989fd8" offset="1"/>
+    </linearGradient>
+  </defs>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <dc:title/>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g transform="translate(61.03125,376.26519)">
+    <path fill="url(#linearGradient4155)" d="m331.05-228.11,207.93,0,0-148.15-207.93,0,0,148.15z"/>
+    <path d="m521.68-244.89-190.12,0,0-111.21,190.12,0,0,111.21z" fill-rule="nonzero" fill="#515bae"/>
+    <path d="m355.68-331.35,20.45,0,0,25.44,30.17,0,0-25.44,20.449,0,0,66.751-20.449,0,0-28.301-30.17,0,0,28.301-20.45,0,0-66.751" fill-rule="nonzero" fill="#FFF"/>
+    <path d="m457.72-318.34,0,40.73,7.33,0c8.3568,0.00002,14.731-1.7436,19.122-5.231,4.4262-3.4873,6.6394-8.5543,6.6394-15.201-0.00006-6.6169-2.1955-11.654-6.5863-15.112-4.391-3.4575-10.783-5.1862-19.175-5.1863h-7.33m-20.45-13.01,21.565,0c12.039,0.00006,20.998,0.73031,26.876,2.1908,5.9135,1.4308,10.977,3.8749,15.191,7.3323,3.718,3.0105,6.48,6.4829,8.286,10.417,1.8058,3.9344,2.7088,8.3904,2.7089,13.368-0.00009,5.0373-0.90305,9.538-2.7089,13.502-1.806,3.9344-4.568,7.4068-8.286,10.417-4.2493,3.4575-9.3484,5.9165-15.297,7.377-5.949,1.4307-14.872,2.146-26.77,2.146h-21.565v-66.751" fill-rule="nonzero" fill="#FFF"/>
+    <path d="m-60.575-228.58,391.77,0,0-147.2-391.77,0,0,147.2z" fill-rule="nonzero" fill="#28439a"/>
+    <path stroke-linejoin="miter" d="m331.18-228.58-391.77,0,0-147.2,391.77,0,0,147.2z" stroke="#28439a" stroke-linecap="butt" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="0.85273236" fill="none"/>
+    <path d="m132.01-249.33,179.09,0,0-105.94-179.09,0,0,105.94z" fill-rule="nonzero" fill="#fbbf18"/>
+    <path fill-rule="nonzero" fill="#ef2e32" d="m210.49-319.6-20.745,0,0,53.56-17.113,0,0-53.56-20.76,0,0-12.835,58.618,0,0,12.835z"/>
+    <path fill-rule="nonzero" fill="#ef2e32" d="m292.89-332.44-24.259,66.396-19.186,0-24.229-66.396,17.79,0,16.187,46.886,16.173-46.886,17.525,0z"/>
+    <path fill-rule="nonzero" fill="#fbbf18" d="m63.471-355.03,0,49.855c0,10.292-2.2494,17.76-6.763,22.406-4.5136,4.6753-11.659,6.9983-21.407,6.9983-9.9093,0-17.069-2.4112-21.48-7.2776-4.4107-4.8518-6.6013-12.218-6.6013-22.127v-49.855h-39.108v51.649c0,17.496,5.6604,30.934,16.996,40.284,11.335,9.3654,28.052,14.041,50.194,14.041,22.127,0,38.858-4.6753,50.238-14.041,11.365-9.3506,17.055-22.818,17.055-40.387v-51.546h-39.123z"/>
+  </g>
+</svg>

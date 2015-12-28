@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" height="112.5" width="600" version="1.1" xmlns:cc="http://creativecommons.org/ns#" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/">
+ <defs></defs>
+ <metadata>
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title/>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <g transform="translate(385.57648,292.83262)">
+  <path fill-rule="evenodd" fill="#e94e0f" d="m214.42-180.34-112.49,0,0-112.49,112.49,0,0,112.49z"/>
+  <path fill-rule="evenodd" fill="#000" d="m-273.08-180.34-112.49,0,0-112.49,112.49,0,0,112.49z"/>
+  <path fill-rule="evenodd" fill="#000" d="m-151.2-180.34-112.49,0,0-112.49,112.49,0,0,112.49z"/>
+  <path fill-rule="evenodd" fill="#000" d="m-29.329-180.34-112.49,0,0-112.49,112.49,0,0,112.49z"/>
+  <path d="m92.548-180.33-112.49,0,0-112.49,112.49,0,0,112.49z" fill-rule="evenodd" fill="#e94e0f"/>
+  <path fill-rule="nonzero" fill="#FFF" d="m-326.3-240.33-13.486,0,0-14.989,14.676,0c5.5817,0,7.065,4.5474,7.065,7.4553,0,4.3132-2.1859,7.5334-8.2555,7.5334m31.519-8.9971c0-17.702-15.242-26.25-23.264-26.25h-44.986v75.744h23.244v-21.741h7.4944l14.247,21.741h26.25l-17.233-26.25s14.247-5.5427,14.247-23.244m203.99,29.255,0-55.505-23.283,0,0,75.783,23.283,0,0-0.039,35.989,0,0-20.239-35.989,0zm-150-35.266,21.761,0.0195,0,55.525,23.244,0,0-55.525,21.741,0,0-20.258-66.747,0,0,20.239z"/>
+ </g>
+</svg>
