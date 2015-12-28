@@ -1,10 +1,8 @@
-ABOUT
-=====
+# ABOUT
 
 All the full resolution channel logos and their link to the actual channel (=serviceref) are kept up2date in this repository. The end result are picons for Enigma2 tuners and Kodi mediacenter in combination with a compatible PVR backend.
 
-BUILDING THE PICONS
-===================
+# BUILDING THE PICONS
 
 [Ubuntu](http://www.ubuntu.com/download), [Cygwin on Windows](https://cygwin.com/install.html) and [Docker](https://www.docker.com/toolbox) are tested and supported platforms for building the picons.
 
@@ -49,8 +47,7 @@ TIP: To automate the building process, you can also use some of the following co
 ...
 ```
 
-DOCKER
-======
+# DOCKER
 
 If you would like to use Docker on Windows, which is recommended, because it's considerably faster than Cygwin. Use the following commands:
 
@@ -65,12 +62,10 @@ git pull
 exit
 ```
 
-CONTRIBUTING
-============
+# CONTRIBUTING
 
-So you would like to contribute? Have a look [here](https://github.com/picons/picons-source/blob/master/CONTRIBUTING.md).
+So you would like to contribute? Have a look [here](https://github.com/picons/picons/blob/master/CONTRIBUTING.md), just so you'll know the rules.
 
-SNP - SERVICE NAME PICONS
-=========================
+# SNP - SERVICE NAME PICONS
 
 The idea behind SNP is that a simplified name derived from the channel name is used to lookup a channel logo. The idea and code was first implemented by OpenVIX for the Enigma2 tuners. Any developer currently using the serviceref method as a way to lookup a logo and would like to implement this alternative, can find the code used to generate the simplified name at the OpenVIX github [repository](https://github.com/OpenViX/enigma2/blob/master/lib/python/Components/Renderer/Picon.py#L88-L89).

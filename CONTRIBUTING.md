@@ -1,15 +1,11 @@
-So you would like to contribute? Below are some guidelines to follow.
-
-ISSUES
-======
+# ISSUES
 
 When submitting an issue, make sure you follow these rules:
 
 - Entries to `srp-index` or `snp-index`, put them inside code blocks by using backticks ([help](https://guides.github.com/features/mastering-markdown)) or if they are really big, use a [gist](https://gist.github.com/).
 - Logos should be inside an archive, correctly named (see below). Share the link.
 
-NAMING
-======
+# NAMING
 
 __Serviceref:__
 
@@ -29,8 +25,9 @@ __Logo:__
 - A `black` version or also a default logo should get the identifier `.black` at the end of the filename, a `white` version should get the identifier `.white`, a `black` version must always exist, a `white` version is optional.
 - Don't forget to put `tv/` or `radio/` in front of the logo's name in `./build-source/snp-index` or `./build-source/srp-index`.
 
-SAMPLE OF SRP-INDEX
-===================
+# SAMPLES
+
+### SRP-INDEX
 
 New additions can go at the top. No need to cleanup old entries, but if you want to, go right ahead.
 
@@ -52,8 +49,7 @@ New additions can go at the top. No need to cleanup old entries, but if you want
 101_E_85_C00000=tv/skybundesligahd-deu
 ```
 
-SAMPLE OF SNP-INDEX
-===================
+### SNP-INDEX
 
 New additions can go at the top. No need to cleanup old entries, but if you want to, go right ahead.
 
