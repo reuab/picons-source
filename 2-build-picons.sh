@@ -3,7 +3,7 @@
 ########################################################
 ## Search for required commands and exit if not found ##
 ########################################################
-commands=( convert pngquant rsvg-convert ar tar xz sed grep tr column cat sort find echo mkdir chmod rm cp mv ln pwd basename )
+commands=( convert pngquant rsvg-convert ar tar xz sed grep tr column cat sort find echo mkdir chmod rm cp mv ln pwd basename )#git git-lfs
 
 for i in "${commands[@]}"; do
     if ! which $i &> /dev/null; then
@@ -119,14 +119,16 @@ else
     fi
 fi
 
-######################################################
-## Cleanup previously created folders and re-create ##
-######################################################
+############################################################
+## Cleanup previously created folders/files and re-create ##
+############################################################
 if [[ -d $temp ]]; then rm -rf "$temp"; fi
 mkdir "$temp"
 
 if [[ -d $binaries ]]; then rm -rf "$binaries"; fi
 mkdir "$binaries"
+
+if [[ -f /tmp/picons.log ]]; then rm /tmp/picons.log; fi
 
 ##############################
 ## Determine version number ##
@@ -160,7 +162,7 @@ echo "$(date +'%H:%M:%S') - Checking logos"
 ## Create symlinks, copy required logos and convert to png ##
 #############################################################
 echo "$(date +'%H:%M:%S') - Creating symlinks and copying logos"
-"$buildtools/create-symlinks+copy-logos.sh" "$location/build-output/servicelist-" "$temp/newbuildsource" "$buildsource" "$style"
+"$buildtools/create-symlinks+copy-logos.sh" "$location/build-output/servicelist-" "$temp/newbuildsource" "$buildsource" "$style" "$location"
 
 echo "$(date +'%H:%M:%S') - Converting svg files"
 for file in $(find "$temp/newbuildsource/logos" -type f -name '*.svg'); do
@@ -240,7 +242,9 @@ for background in "$buildsource/backgrounds/$backgroundname"* ; do
                                 ;;
                         esac
 
-                        convert "$backgroundcolor" \( "$logo" -background none -bordercolor none -border 100 -trim -border 1% -resize $resize -gravity center -extent $extent +repage \) -layers merge - 2>> /dev/null | $compress > "$temp/finalpicons/picon/$directory/$logoname.png"
+                        echo "$logo" >> /tmp/picons.log
+                        convert "$backgroundcolor" \( "$logo" -background none -bordercolor none -border 100 -trim -border 1% -resize $resize -gravity center -extent $extent +repage \) -layers merge - 2>> /dev/null | $compress 2>> /tmp/picons.log > "$temp/finalpicons/picon/$directory/$logoname.png"
+                        #cat "$backgroundcolor" | git lfs smudge 2>> /tmp/picons.log | convert - \( "$logo" -background none -bordercolor none -border 100 -trim -border 1% -resize $resize -gravity center -extent $extent +repage \) -layers merge - 2>> /dev/null | $compress 2>> /tmp/picons.log > "$temp/finalpicons/picon/$directory/$logoname.png"
 
                     fi
                 done
@@ -259,7 +263,7 @@ for background in "$buildsource/backgrounds/$backgroundname"* ; do
 				Section: base
 				Architecture: all
 				Maintainer: https://picons.xyz
-				Source: https://github.com/picons/picons-source
+				Source: https://picons.xyz
 				Description: $style.$backgroundname.$backgroundcolorname
 				OE: enigma2-plugin-picons-$style.$backgroundname.$backgroundcolorname
 				HomePage: https://picons.xyz
@@ -270,13 +274,13 @@ for background in "$buildsource/backgrounds/$backgroundname"* ; do
             "$buildtools/ipkg-build.sh" -o root -g root "$temp/finalpicons" "$binaries" > /dev/null
 
             mv "$temp/finalpicons/picon" "$temp/finalpicons/$packagename"
-            tar --dereference --owner=root --group=root -cf - --directory="$temp/finalpicons" "$packagename" --exclude="tv" --exclude="radio" | xz -9 --extreme --memlimit=40% > "$binaries/$packagename.tar.xz"
+            tar --dereference --owner=root --group=root -cf - --directory="$temp/finalpicons" "$packagename" --exclude="tv" --exclude="radio" | xz -9 --extreme --memlimit=40% 2>> /tmp/picons.log > "$binaries/$packagename.tar.xz"
         fi
 
         if [[ $backgroundname = "kodi" ]]; then
             find "$temp/finalpicons" -exec touch --no-dereference -t "$timestamp" {} \;
             mv "$temp/finalpicons/picon" "$temp/finalpicons/$packagename"
-            tar --owner=root --group=root -cf - --directory="$temp/finalpicons" "$packagename" | xz -9 --extreme --memlimit=40% > "$binaries/$packagename.tar.xz"
+            tar --owner=root --group=root -cf - --directory="$temp/finalpicons" "$packagename" | xz -9 --extreme --memlimit=40% 2>> /tmp/picons.log > "$binaries/$packagename.tar.xz"
         fi
 
         find "$binaries" -exec touch -t "$timestamp" {} \;

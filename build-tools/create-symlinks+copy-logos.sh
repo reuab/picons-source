@@ -4,6 +4,7 @@ serviceref_list="$1"
 build_location="$2"
 source_location="$3"
 style="$4"
+repodir="$5"
 
 if [[ -d $build_location ]]; then
     rm -rf "$build_location"
@@ -11,7 +12,7 @@ fi
 
 mkdir -p "$build_location/symlinks"
 
-cd "$build_location/symlinks"
+cd "$repodir"
 
 ####################################################################
 ## Create symlinks and copy logos for SNP & SRP using servicelist ##
@@ -32,22 +33,24 @@ if [[ $style = "snp" ]] || [[ $style = "srp" ]]; then
         snpname=${link_snp[0]}
 
         if [[ ! $logo_srp = "--------" ]]; then
-            ln -s -f "$logo_srp.png" "$serviceref.png"
+            ln -s -f "$logo_srp.png" "$build_location/symlinks/$serviceref.png"
 
             logoname=$(basename "$logo_srp")
             dir=$(dirname "$logo_srp")
             mkdir -p "$build_location/logos/$dir"
             find "$source_location/$dir/" -maxdepth 1 -type f -name "$logoname.*" -exec cp -n {} "$build_location/logos/$dir/" \;
+            #find "$source_location/$dir/" -maxdepth 1 -type f -name "$logoname.*" -exec sh -c 'cat {} | git lfs smudge 2>> /tmp/picons.log > '$build_location'/logos/'$dir'/$(basename {})' \;
         fi
 
         if [[ $style = "snp" ]]; then
             if [[ ! $logo_snp = "--------" ]]; then
-                ln -s -f "$logo_snp.png" "$snpname.png"
+                ln -s -f "$logo_snp.png" "$build_location/symlinks/$snpname.png"
 
                 logoname=$(basename "$logo_snp")
                 dir=$(dirname "$logo_snp")
                 mkdir -p "$build_location/logos/$dir"
                 find "$source_location/$dir/" -maxdepth 1 -type f -name "$logoname.*" -exec cp -n {} "$build_location/logos/$dir/" \;
+                #find "$source_location/$dir/" -maxdepth 1 -type f -name "$logoname.*" -exec sh -c 'cat {} | git lfs smudge 2>> /tmp/picons.log > '$build_location'/logos/'$dir'/$(basename {})' \;
             fi
         fi
     done
@@ -65,19 +68,20 @@ if [[ $style = "snp-full" ]]; then
 
         if [[ $snpname == *"_"* ]]; then
             if [[ $logo_snp == *"tv/"* ]]; then
-                ln -s -f "$logo_snp.png" '1_0_1_'"$snpname"'_0_0_0'".png"
+                ln -s -f "$logo_snp.png" "$build_location/symlinks/"'1_0_1_'"$snpname"'_0_0_0'".png"
             fi
             if [[ $logo_snp == *"radio/"* ]]; then
-                ln -s -f "$logo_snp.png" '1_0_2_'"$snpname"'_0_0_0'".png"
+                ln -s -f "$logo_snp.png" "$build_location/symlinks/"'1_0_2_'"$snpname"'_0_0_0'".png"
             fi
         else
-            ln -s -f "$logo_snp.png" "$snpname.png"
+            ln -s -f "$logo_snp.png" "$build_location/symlinks/$snpname.png"
         fi
 
         logoname=$(basename "$logo_snp")
         dir=$(dirname "$logo_snp")
         mkdir -p "$build_location/logos/$dir"
         find "$source_location/$dir/" -maxdepth 1 -type f -name "$logoname.*" -exec cp -n {} "$build_location/logos/$dir/" \;
+        #find "$source_location/$dir/" -maxdepth 1 -type f -name "$logoname.*" -exec sh -c 'cat {} | git lfs smudge 2>> /tmp/picons.log > '$build_location'/logos/'$dir'/$(basename {})' \;
     done
 fi
 
@@ -92,15 +96,16 @@ if [[ $style = "srp-full" ]]; then
         unique_id=${link_srp[0]}
 
         if [[ $logo_srp == *"tv/"* ]]; then
-            ln -s -f "$logo_srp.png" '1_0_1_'"$unique_id"'_0_0_0'".png"
+            ln -s -f "$logo_srp.png" "$build_location/symlinks/"'1_0_1_'"$unique_id"'_0_0_0'".png"
         fi
         if [[ $logo_srp == *"radio/"* ]]; then
-            ln -s -f "$logo_srp.png" '1_0_2_'"$unique_id"'_0_0_0'".png"
+            ln -s -f "$logo_srp.png" "$build_location/symlinks/"'1_0_2_'"$unique_id"'_0_0_0'".png"
         fi
 
         logoname=$(basename "$logo_srp")
         dir=$(dirname "$logo_srp")
         mkdir -p "$build_location/logos/$dir"
         find "$source_location/$dir/" -maxdepth 1 -type f -name "$logoname.*" -exec cp -n {} "$build_location/logos/$dir/" \;
+        #find "$source_location/$dir/" -maxdepth 1 -type f -name "$logoname.*" -exec sh -c 'cat {} | git lfs smudge 2>> /tmp/picons.log > '$build_location'/logos/'$dir'/$(basename {})' \;
     done
 fi
