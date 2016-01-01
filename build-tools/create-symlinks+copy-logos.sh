@@ -33,10 +33,11 @@ if [[ $style = "snp" ]] || [[ $style = "srp" ]]; then
         snpname=${link_snp[0]}
 
         if [[ ! $logo_srp = "--------" ]]; then
-            ln -s -f "$logo_srp.png" "$build_location/symlinks/$serviceref.png"
+            ln -s -f "logos/$logo_srp.png" "$build_location/symlinks/$serviceref.png"
 
             logoname=$(basename "$logo_srp")
-            dir=$(dirname "$logo_srp")
+            #dir=$(dirname "$logo_srp")
+            dir="logos"
             mkdir -p "$build_location/logos/$dir"
             find "$source_location/$dir/" -maxdepth 1 -type f -name "$logoname.*" -exec cp -n {} "$build_location/logos/$dir/" \;
             #find "$source_location/$dir/" -maxdepth 1 -type f -name "$logoname.*" -exec sh -c 'cat {} | git lfs smudge 2>> /tmp/picons.log > '$build_location'/logos/'$dir'/$(basename {})' \;
@@ -44,10 +45,11 @@ if [[ $style = "snp" ]] || [[ $style = "srp" ]]; then
 
         if [[ $style = "snp" ]]; then
             if [[ ! $logo_snp = "--------" ]]; then
-                ln -s -f "$logo_snp.png" "$build_location/symlinks/$snpname.png"
+                ln -s -f "logos/$logo_snp.png" "$build_location/symlinks/$snpname.png"
 
                 logoname=$(basename "$logo_snp")
-                dir=$(dirname "$logo_snp")
+                #dir=$(dirname "$logo_snp")
+                dir="logos"
                 mkdir -p "$build_location/logos/$dir"
                 find "$source_location/$dir/" -maxdepth 1 -type f -name "$logoname.*" -exec cp -n {} "$build_location/logos/$dir/" \;
                 #find "$source_location/$dir/" -maxdepth 1 -type f -name "$logoname.*" -exec sh -c 'cat {} | git lfs smudge 2>> /tmp/picons.log > '$build_location'/logos/'$dir'/$(basename {})' \;
@@ -67,18 +69,19 @@ if [[ $style = "snp-full" ]]; then
         snpname=${link_snp[0]}
 
         if [[ $snpname == *"_"* ]]; then
-            if [[ $logo_snp == *"tv/"* ]]; then
-                ln -s -f "$logo_snp.png" "$build_location/symlinks/"'1_0_1_'"$snpname"'_0_0_0'".png"
-            fi
-            if [[ $logo_snp == *"radio/"* ]]; then
-                ln -s -f "$logo_snp.png" "$build_location/symlinks/"'1_0_2_'"$snpname"'_0_0_0'".png"
-            fi
+            #if [[ $logo_snp == *"tv/"* ]]; then
+                ln -s -f "logos/$logo_snp.png" "$build_location/symlinks/"'1_0_1_'"$snpname"'_0_0_0'".png"
+            #fi
+            #if [[ $logo_snp == *"radio/"* ]]; then
+                #ln -s -f "$logo_snp.png" "$build_location/symlinks/"'1_0_2_'"$snpname"'_0_0_0'".png"
+            #fi
         else
-            ln -s -f "$logo_snp.png" "$build_location/symlinks/$snpname.png"
+            ln -s -f "logos/$logo_snp.png" "$build_location/symlinks/$snpname.png"
         fi
 
         logoname=$(basename "$logo_snp")
-        dir=$(dirname "$logo_snp")
+        #dir=$(dirname "$logo_snp")
+        dir="logos"
         mkdir -p "$build_location/logos/$dir"
         find "$source_location/$dir/" -maxdepth 1 -type f -name "$logoname.*" -exec cp -n {} "$build_location/logos/$dir/" \;
         #find "$source_location/$dir/" -maxdepth 1 -type f -name "$logoname.*" -exec sh -c 'cat {} | git lfs smudge 2>> /tmp/picons.log > '$build_location'/logos/'$dir'/$(basename {})' \;
@@ -95,15 +98,16 @@ if [[ $style = "srp-full" ]]; then
         logo_srp=${link_srp[1]}
         unique_id=${link_srp[0]}
 
-        if [[ $logo_srp == *"tv/"* ]]; then
-            ln -s -f "$logo_srp.png" "$build_location/symlinks/"'1_0_1_'"$unique_id"'_0_0_0'".png"
-        fi
-        if [[ $logo_srp == *"radio/"* ]]; then
-            ln -s -f "$logo_srp.png" "$build_location/symlinks/"'1_0_2_'"$unique_id"'_0_0_0'".png"
-        fi
+        #if [[ $logo_srp == *"tv/"* ]]; then
+            ln -s -f "logos/$logo_srp.png" "$build_location/symlinks/"'1_0_1_'"$unique_id"'_0_0_0'".png"
+        #fi
+        #if [[ $logo_srp == *"radio/"* ]]; then
+            #ln -s -f "$logo_srp.png" "$build_location/symlinks/"'1_0_2_'"$unique_id"'_0_0_0'".png"
+        #fi
 
         logoname=$(basename "$logo_srp")
-        dir=$(dirname "$logo_srp")
+        #dir=$(dirname "$logo_srp")
+        dir="logos"
         mkdir -p "$build_location/logos/$dir"
         find "$source_location/$dir/" -maxdepth 1 -type f -name "$logoname.*" -exec cp -n {} "$build_location/logos/$dir/" \;
         #find "$source_location/$dir/" -maxdepth 1 -type f -name "$logoname.*" -exec sh -c 'cat {} | git lfs smudge 2>> /tmp/picons.log > '$build_location'/logos/'$dir'/$(basename {})' \;

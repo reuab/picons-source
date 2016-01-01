@@ -151,12 +151,11 @@ echo "$(date +'%H:%M:%S') - Version: $version"
 chmod -R 755 "$buildtools/"*.sh
 
 echo "$(date +'%H:%M:%S') - Checking index"
-"$buildtools/check-index.sh" "$buildsource" "srp"
-"$buildtools/check-index.sh" "$buildsource" "snp"
+"$buildtools/check-index.sh" "$buildsource/logos" "srp"
+"$buildtools/check-index.sh" "$buildsource/logos" "snp"
 
 echo "$(date +'%H:%M:%S') - Checking logos"
-"$buildtools/check-logos.sh" "$buildsource/tv"
-"$buildtools/check-logos.sh" "$buildsource/radio"
+"$buildtools/check-logos.sh" "$buildsource/logos"
 
 #############################################################
 ## Create symlinks, copy required logos and convert to png ##
