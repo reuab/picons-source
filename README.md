@@ -64,7 +64,7 @@ exit
 
 # CONTRIBUTING
 
-So you would like to contribute? Have a look [here](https://github.com/picons/picons/blob/master/CONTRIBUTING.md), just so you'll know the rules.
+So you would like to contribute? Have a look [here](https://github.com/picons/picons-source/blob/master/CONTRIBUTING.md), just so you'll know the rules.
 
 # SNP - SERVICE NAME PICONS
 
