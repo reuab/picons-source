@@ -11,7 +11,7 @@ Download the repository by using the following command:
 git clone https://github.com/picons/picons-source.git /tmp/picons-source
 ```
 
-Next, copy your `enigma2` folder, your `tvheadend` folder or your `channels.conf` file to `/tmp/picons-source/build-input`.
+Next, copy your `enigma2` folder, your `tvheadend` folder or your `channels.conf` file to `/tmp/picons-source/build-input`. See the following [README](https://github.com/picons/picons-source/blob/master/build-input/README.md) for more info.
 
 We will start the creation of the servicelist with the following command:
 ```
@@ -19,7 +19,7 @@ We will start the creation of the servicelist with the following command:
 ```
 
 
-If all goes well, you'll end up with a new file located in the folder `/tmp/picons-source/build-output`, similar to the files [servicelist-enigma2-snp](https://gist.githubusercontent.com/picons/64f50aec02244e7af1e2/raw/df223a0d3a83f1bf867c49bf566b4a0c4285304b/servicelist-enigma2-snp) and [servicelist-enigma2-srp](https://gist.githubusercontent.com/picons/f7a16dcc8886367954ef/raw/c2d68acec3713c6df18a3eab88c10a69f1acd7c4/servicelist-enigma2-srp).
+If all goes well, you'll end up with a new file located in the folder `/tmp/picons-source/build-output`, similar to the files [servicelist-enigma2-snp](https://raw.githubusercontent.com/picons/picons-samples/master/servicelist-enigma2-snp) and [servicelist-enigma2-srp](https://raw.githubusercontent.com/picons/picons-samples/master/servicelist-enigma2-srp).
 
 To start the actual building process of the picons, use the following command:
 ```
