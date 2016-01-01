@@ -188,65 +188,59 @@ for background in "$buildsource/backgrounds/$backgroundname"* ; do
 
         mkdir -p "$temp/finalpicons/picon"
 
-        for directory in "$temp/newbuildsource/logos/"* ; do
-            if [[ -d $directory ]]; then
-                directory=${directory##*/}
-                for logo in "$temp/newbuildsource/logos/$directory/"*.black.png ; do
-                    if [[ -f $logo ]]; then
-                        ((currentlogo++))
-                        echo -ne "           Converting logo: $currentlogo/$logocount"\\r
+        for logo in "$temp/newbuildsource/logos/"*.black.png ; do
+            if [[ -f $logo ]]; then
+                ((currentlogo++))
+                echo -ne "           Converting logo: $currentlogo/$logocount"\\r
 
-                        logoname=$(basename ${logo%.*.*})
+                logoname=$(basename ${logo%.*.*})
 
-                        if [[ ! -d $temp/finalpicons/picon/$directory ]]; then
-                            mkdir -p "$temp/finalpicons/picon/$directory"
-                        fi
+                if [[ ! -d $temp/finalpicons/picon/logos ]]; then
+                    mkdir -p "$temp/finalpicons/picon/logos"
+                fi
 
-                        if [[ $backgroundcolorname == white.on.* ]]; then
-                            if [[ -f $temp/newbuildsource/logos/$directory/$logoname.white.png ]]; then
-                                logo="$temp/newbuildsource/logos/$directory/$logoname.white.png"
-                            fi
-                        fi
-
-                        case "$backgroundname" in
-                            "70x53")
-                                if [[ $backgroundcolorname == *-nopadding ]]; then resize="70x53"; else resize="62x45"; fi
-                                extent="70x53"
-                                compress="pngquant -"
-                                ;;
-                            "100x60")
-                                if [[ $backgroundcolorname == *-nopadding ]]; then resize="100x60"; else resize="86x46"; fi
-                                extent="100x60"
-                                compress="pngquant -"
-                                ;;
-                            "220x132")
-                                if [[ $backgroundcolorname == *-nopadding ]]; then resize="220x132"; else resize="189x101"; fi
-                                extent="220x132"
-                                compress="pngquant -"
-                                ;;
-                            "400x170")
-                                if [[ $backgroundcolorname == *-nopadding ]]; then resize="400x170"; else resize="369x157"; fi
-                                extent="400x170"
-                                compress="pngquant -"
-                                ;;
-                            "400x240")
-                                if [[ $backgroundcolorname == *-nopadding ]]; then resize="400x240"; else resize="369x221"; fi
-                                extent="400x240"
-                                compress="pngquant -"
-                                ;;
-                            "kodi")
-                                if [[ $backgroundcolorname == *-nopadding ]]; then resize="256x256"; else resize="226x226"; fi
-                                extent="256x256"
-                                compress="pngquant -"
-                                ;;
-                        esac
-
-                        echo "$logo" >> /tmp/picons.log
-                        convert "$backgroundcolor" \( "$logo" -background none -bordercolor none -border 100 -trim -border 1% -resize $resize -gravity center -extent $extent +repage \) -layers merge - 2>> /dev/null | $compress 2>> /tmp/picons.log > "$temp/finalpicons/picon/$directory/$logoname.png"
-                        #cat "$backgroundcolor" | git lfs smudge 2>> /tmp/picons.log | convert - \( "$logo" -background none -bordercolor none -border 100 -trim -border 1% -resize $resize -gravity center -extent $extent +repage \) -layers merge - 2>> /dev/null | $compress 2>> /tmp/picons.log > "$temp/finalpicons/picon/$directory/$logoname.png"
-
+                if [[ $backgroundcolorname == white.on.* ]]; then
+                    if [[ -f $temp/newbuildsource/logos/$logoname.white.png ]]; then
+                        logo="$temp/newbuildsource/logos/$logoname.white.png"
                     fi
-                done
+                fi
+
+                case "$backgroundname" in
+                    "70x53")
+                        if [[ $backgroundcolorname == *-nopadding ]]; then resize="70x53"; else resize="62x45"; fi
+                        extent="70x53"
+                        compress="pngquant -"
+                        ;;
+                    "100x60")
+                        if [[ $backgroundcolorname == *-nopadding ]]; then resize="100x60"; else resize="86x46"; fi
+                        extent="100x60"
+                        compress="pngquant -"
+                        ;;
+                    "220x132")
+                        if [[ $backgroundcolorname == *-nopadding ]]; then resize="220x132"; else resize="189x101"; fi
+                        extent="220x132"
+                        compress="pngquant -"
+                        ;;
+                    "400x170")
+                        if [[ $backgroundcolorname == *-nopadding ]]; then resize="400x170"; else resize="369x157"; fi
+                        extent="400x170"
+                        compress="pngquant -"
+                        ;;
+                    "400x240")
+                        if [[ $backgroundcolorname == *-nopadding ]]; then resize="400x240"; else resize="369x221"; fi
+                        extent="400x240"
+                        compress="pngquant -"
+                        ;;
+                    "kodi")
+                        if [[ $backgroundcolorname == *-nopadding ]]; then resize="256x256"; else resize="226x226"; fi
+                        extent="256x256"
+                        compress="pngquant -"
+                        ;;
+                esac
+
+                echo "$logo" >> /tmp/picons.log
+                convert "$backgroundcolor" \( "$logo" -background none -bordercolor none -border 100 -trim -border 1% -resize $resize -gravity center -extent $extent +repage \) -layers merge - 2>> /dev/null | $compress 2>> /tmp/picons.log > "$temp/finalpicons/picon/logos/$logoname.png"
+                #cat "$backgroundcolor" | git lfs smudge 2>> /tmp/picons.log | convert - \( "$logo" -background none -bordercolor none -border 100 -trim -border 1% -resize $resize -gravity center -extent $extent +repage \) -layers merge - 2>> /dev/null | $compress 2>> /tmp/picons.log > "$temp/finalpicons/picon/logos/$logoname.png"
             fi
         done
 
@@ -273,7 +267,7 @@ for background in "$buildsource/backgrounds/$backgroundname"* ; do
             "$buildtools/ipkg-build.sh" -o root -g root "$temp/finalpicons" "$binaries" > /dev/null
 
             mv "$temp/finalpicons/picon" "$temp/finalpicons/$packagename"
-            tar --dereference --owner=root --group=root -cf - --directory="$temp/finalpicons" "$packagename" --exclude="tv" --exclude="radio" | xz -9 --extreme --memlimit=40% 2>> /tmp/picons.log > "$binaries/$packagename.tar.xz"
+            tar --dereference --owner=root --group=root -cf - --directory="$temp/finalpicons" "$packagename" --exclude="logos" | xz -9 --extreme --memlimit=40% 2>> /tmp/picons.log > "$binaries/$packagename.tar.xz"
         fi
 
         if [[ $backgroundname = "kodi" ]]; then
