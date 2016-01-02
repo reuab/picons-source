@@ -35,20 +35,16 @@ if [[ $style = "snp" ]] || [[ $style = "srp" ]]; then
 
         if [[ ! $logo_srp = "--------" ]]; then
             ln -s -f "logos/$logo_srp.png" "$build_location/symlinks/$serviceref.png"
-
-            logoname="$logo_srp"
-            find "$source_location/logos/" -maxdepth 1 -type f -name "$logoname.*" -exec cp -n {} "$build_location/logos/" \;
-            #find "$source_location/logos/" -maxdepth 1 -type f -name "$logoname.*" -exec sh -c 'cat {} | git lfs smudge 2>> /tmp/picons.log > '$build_location'/logos/$(basename {})' \;
+            cp -n "$source_location/logos/$logo_srp.*" "$build_location/logos/"
+            #find "$source_location/logos/" -maxdepth 1 -type f -name "$logo_srp.*" -exec cp -n {} "$build_location/logos/" \;
+            #find "$source_location/logos/" -maxdepth 1 -type f -name "$logo_srp.*" -exec sh -c 'cat {} | git lfs smudge 2>> /tmp/picons.log > '$build_location'/logos/$(basename {})' \;
         fi
 
-        if [[ $style = "snp" ]]; then
-            if [[ ! $logo_snp = "--------" ]]; then
-                ln -s -f "logos/$logo_snp.png" "$build_location/symlinks/$snpname.png"
-
-                logoname="$logo_snp"
-                find "$source_location/logos/" -maxdepth 1 -type f -name "$logoname.*" -exec cp -n {} "$build_location/logos/" \;
-                #find "$source_location/logos/" -maxdepth 1 -type f -name "$logoname.*" -exec sh -c 'cat {} | git lfs smudge 2>> /tmp/picons.log > '$build_location'/logos/$(basename {})' \;
-            fi
+        if [[ $style = "snp" ]] && [[ ! $logo_snp = "--------" ]]; then
+            ln -s -f "logos/$logo_snp.png" "$build_location/symlinks/$snpname.png"
+            cp -n "$source_location/logos/$logo_snp.*" "$build_location/logos/"
+            #find "$source_location/logos/" -maxdepth 1 -type f -name "$logo_snp.*" -exec cp -n {} "$build_location/logos/" \;
+            #find "$source_location/logos/" -maxdepth 1 -type f -name "$logo_snp.*" -exec sh -c 'cat {} | git lfs smudge 2>> /tmp/picons.log > '$build_location'/logos/$(basename {})' \;
         fi
     done
 fi
@@ -69,9 +65,9 @@ if [[ $style = "snp-full" ]]; then
             ln -s -f "logos/$logo_snp.png" "$build_location/symlinks/$snpname.png"
         fi
 
-        logoname="$logo_snp"
-        find "$source_location/logos/" -maxdepth 1 -type f -name "$logoname.*" -exec cp -n {} "$build_location/logos/" \;
-        #find "$source_location/logos/" -maxdepth 1 -type f -name "$logoname.*" -exec sh -c 'cat {} | git lfs smudge 2>> /tmp/picons.log > '$build_location'/logos/$(basename {})' \;
+        cp -n "$source_location/logos/$logo_snp.*" "$build_location/logos/"
+        #find "$source_location/logos/" -maxdepth 1 -type f -name "$logo_snp.*" -exec cp -n {} "$build_location/logos/" \;
+        #find "$source_location/logos/" -maxdepth 1 -type f -name "$logo_snp.*" -exec sh -c 'cat {} | git lfs smudge 2>> /tmp/picons.log > '$build_location'/logos/$(basename {})' \;
     done
 fi
 
@@ -87,8 +83,8 @@ if [[ $style = "srp-full" ]]; then
 
         ln -s -f "logos/$logo_srp.png" "$build_location/symlinks/"'1_0_1_'"$unique_id"'_0_0_0'".png"
 
-        logoname="$logo_srp"
-        find "$source_location/logos/" -maxdepth 1 -type f -name "$logoname.*" -exec cp -n {} "$build_location/logos/" \;
-        #find "$source_location/logos/" -maxdepth 1 -type f -name "$logoname.*" -exec sh -c 'cat {} | git lfs smudge 2>> /tmp/picons.log > '$build_location'/logos/$(basename {})' \;
+        cp -n "$source_location/logos/$logo_srp.*" "$build_location/logos/"
+        #find "$source_location/logos/" -maxdepth 1 -type f -name "$logo_srp.*" -exec cp -n {} "$build_location/logos/" \;
+        #find "$source_location/logos/" -maxdepth 1 -type f -name "$logo_srp.*" -exec sh -c 'cat {} | git lfs smudge 2>> /tmp/picons.log > '$build_location'/logos/$(basename {})' \;
     done
 fi
