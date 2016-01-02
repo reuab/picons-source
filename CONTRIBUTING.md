@@ -22,8 +22,9 @@ __Logo:__
 - The resolution doesn't matter for `svg`, for `png` try to get it > 400px.
 - When submitting `svg` files, make sure to convert `text` to `paths`.
 - It's not allowed for `svg` files to contain base64 encoded images.
+- If it's possible to easily trace your png with Inkscape, only the `svg` is allowed. In most cases this is possible.
 - Quality should be as high as possible with transparancy.
-- A `black` version or also a default logo should get the identifier `.black` at the end of the filename, a `white` version should get the identifier `.white`, a `black` version must always exist, a `white` version is optional.
+- A `black` version or also known as a default logo should get the identifier `.black` at the end of the filename, a `white` version should get the identifier `.white`, a `black` version must always exist, a `white` version is optional.
 
 # SAMPLES
 
