@@ -40,7 +40,7 @@ fi
 ############################
 location="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 buildsource="$location/build-source"
-buildtools="$location/tools"
+buildtools="$location/resources/tools"
 binaries="$location/build-output/binaries-$style"
 
 if [[ -d /dev/shm ]] && [[ ! -f /.dockerinit ]]; then
