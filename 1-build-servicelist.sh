@@ -59,7 +59,7 @@ if [[ -d $location/build-input/enigma2 ]]; then
         serviceref_id=$(sed -e 's/^[^_]*_0_[^_]*_//g' -e 's/_0_0_0$//g' <<< "$serviceref")
         unique_id=${serviceref_id%????}
         channelref=(${serviceref//_/ })
-        channelname=$(grep -i -A1 "${channelref[3]}:.*${channelref[6]}:.*${channelref[4]}:.*${channelref[5]}:.*:.*" <<< "$lamedb" | sed -n "2p" | iconv -c -f utf-8 -t ascii | sed -e 's/^[ \t]*//' -e 's/|//g' -e 's/§//g')
+        channelname=$(grep -i -A1 "${channelref[3]}:.*${channelref[6]}:.*${channelref[4]}:.*${channelref[5]}:.*:.*" <<< "$lamedb" | sed -n "2p" | iconv -f utf-8 -t ascii//translit | sed -e 's/^[ \t]*//' -e 's/|//g' -e 's/§//g')
 
         logo_srp=$(grep -i -m 1 "^$unique_id" <<< "$index" | sed -n -e 's/.*=//p')
         if [[ -z $logo_srp ]]; then logo_srp="--------"; fi
@@ -98,7 +98,7 @@ if [[ -d $location/build-input/tvheadend ]]; then
         serviceref_id=$(sed -e 's/^[^_]*_0_[^_]*_//g' -e 's/_0_0_0$//g' <<< "$serviceref")
         unique_id=${serviceref_id%????}
         tvhservice=$(grep -A1 'services' "$channelfile" | sed -n "2p" | sed -e 's/"//g' -e 's/,//g')
-        channelname=$(grep 'svcname' $(find "$location/build-input/tvheadend" -type f -name $tvhservice) | sed -e 's/.*"svcname": "//g' -e 's/",//g' | iconv -c -f utf-8 -t ascii | sed -e 's/^[ \t]*//' -e 's/|//g' -e 's/§//g')
+        channelname=$(grep 'svcname' $(find "$location/build-input/tvheadend" -type f -name $tvhservice) | sed -e 's/.*"svcname": "//g' -e 's/",//g' | iconv -f utf-8 -t ascii//translit | sed -e 's/^[ \t]*//' -e 's/|//g' -e 's/§//g')
 
         logo_srp=$(grep -i -m 1 "^$unique_id" <<< "$index" | sed -n -e 's/.*=//p')
         if [[ -z $logo_srp ]]; then logo_srp="--------"; fi
@@ -232,7 +232,7 @@ if [[ -f $location/build-input/channels.conf ]]; then
         serviceref='1_0_'"$channeltype"'_'"$unique_id"'0000_0_0_0'
         serviceref_id="$unique_id"'0000'
         channelname=(${vdrchannel[0]})
-        channelname=$(iconv -c -f utf-8 -t ascii <<< "${channelname[0]}" | sed -e 's/^[ \t]*//' -e 's/|//g' -e 's/§//g')
+        channelname=$(iconv -f utf-8 -t ascii//translit <<< "${channelname[0]}" | sed -e 's/^[ \t]*//' -e 's/|//g' -e 's/§//g')
 
         logo_srp=$(grep -i -m 1 "^$unique_id" <<< "$index" | sed -n -e 's/.*=//p')
         if [[ -z $logo_srp ]]; then logo_srp="--------"; fi
