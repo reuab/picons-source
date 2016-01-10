@@ -36,7 +36,6 @@ fi
 #####################################
 location=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 index=$(<"$location/build-source/$style-index")
-temp="/tmp"
 
 ##################################
 ## Enigma2 servicelist creation ##
