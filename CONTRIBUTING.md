@@ -19,12 +19,21 @@ __Logo:__
 - Time sharing channels are seperated by `_`.
 - If the logo name you wish to use already exists, add a unique identifier like `-trechuhipe`, this is a pronounceable random 10 character string generated using [this](http://www.generate-password.com) password generator. Grouping togheter logos using the same unique identifier is possible.
 - Filetype `svg` is the way to go, otherwise `png`.
-- The resolution doesn't matter for `svg`, for `png` try to get it > 400px.
+- The resolution doesn't matter for `svg`, for `png` try to get it > 800px.
 - When submitting `svg` files, make sure to convert `text` to `paths`.
 - It's not allowed for `svg` files to contain base64 encoded images.
 - If it's possible to easily trace your png with Inkscape, only the `svg` is allowed. In most cases this is possible.
 - Quality should be as high as possible with transparancy.
-- A `default` version of a logo should get the identifier `.default` at the end of the filename, a `light` version should get the identifier `.light`, a `default` version must always exist, a `light` version is optional. Additional types are possible, by using for example `dark`, `black`, `white`.
+- A `default` version of a logo should get the identifier `.default` at the end of the filename, a `light` version should get the identifier `.light`, a `default` version must always exist, a `light` version is optional. Additional types are possible, by using for example `dark`, `black`, `white`. At the moment only `default` and `light` types are being included in this project.
+
+Explanation of logo types:
+```
+default=standard logo as used by the tv station, looks good on background intended by tv station
+light=modified default logo that makes darker parts lighter, looks good on darker backgrounds
+dark=modified default logo that makes lighter parts darker, looks good on lighter backgrounds
+white=fully white logo, no colors allowed, looks good on dark backgrounds
+black=fully black logo, no colors allowed, looks good on light backgrounds
+```
 
 # SAMPLES
 
