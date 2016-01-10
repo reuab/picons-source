@@ -3,7 +3,7 @@
 ########################################################
 ## Search for required commands and exit if not found ##
 ########################################################
-commands=( convert pngquant rsvg-convert ar tar xz sed grep tr column cat sort find echo mkdir chmod rm cp mv ln pwd basename )
+commands=( convert pngquant rsvg-convert ar tar xz sed grep tr column cat sort find echo mkdir chmod rm cp mv ln pwd basename mktemp )
 
 for i in "${commands[@]}"; do
     if ! which $i &> /dev/null; then

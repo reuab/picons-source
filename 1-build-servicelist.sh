@@ -3,7 +3,7 @@
 ########################################################
 ## Search for required commands and exit if not found ##
 ########################################################
-commands=( sed grep column cat sort find echo rm wc iconv awk printf pwd )
+commands=( sed grep column cat sort find echo rm wc iconv awk printf pwd mktemp )
 
 for i in "${commands[@]}"; do
     if ! which $i &> /dev/null; then
