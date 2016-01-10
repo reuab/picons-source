@@ -183,6 +183,12 @@ for background in "$buildsource/backgrounds/$backgroundname"* ; do
         currentlogo=""
         backgroundcolorname=$(basename ${backgroundcolor%.*})
 
+        OLDIFS=$IFS
+        IFS="-"
+        sizes=($backgroundname)
+        IFS=$OLDIFS
+        backgroundname="${sizes[0]}"
+
         echo "$(date +'%H:%M:%S') -----------------------------------------------------------"
         echo "$(date +'%H:%M:%S') - Creating picons: $style.$backgroundname.$backgroundcolorname"
 
@@ -205,43 +211,9 @@ for background in "$buildsource/backgrounds/$backgroundname"* ; do
                     fi
                 fi
 
-                case "$backgroundname" in
-                    "70x53")
-                        if [[ $backgroundcolorname == *-nopadding ]]; then resize="70x53"; else resize="62x45"; fi
-                        extent="70x53"
-                        compress="pngquant -"
-                        ;;
-                    "100x60")
-                        if [[ $backgroundcolorname == *-nopadding ]]; then resize="100x60"; else resize="86x46"; fi
-                        extent="100x60"
-                        compress="pngquant -"
-                        ;;
-                    "220x132")
-                        if [[ $backgroundcolorname == *-nopadding ]]; then resize="220x132"; else resize="190x102"; fi
-                        extent="220x132"
-                        compress="pngquant -"
-                        ;;
-                    "256x256")
-                        if [[ $backgroundcolorname == *-nopadding ]]; then resize="256x256"; else resize="226x226"; fi
-                        extent="256x256"
-                        compress="pngquant -"
-                        ;;
-                    "400x170")
-                        if [[ $backgroundcolorname == *-nopadding ]]; then resize="400x170"; else resize="370x140"; fi
-                        extent="400x170"
-                        compress="pngquant -"
-                        ;;
-                    "400x240")
-                        if [[ $backgroundcolorname == *-nopadding ]]; then resize="400x240"; else resize="370x210"; fi
-                        extent="400x240"
-                        compress="pngquant -"
-                        ;;
-                    "800x450")
-                        if [[ $backgroundcolorname == *-nopadding ]]; then resize="800x450"; else resize="760x410"; fi
-                        extent="800x450"
-                        compress="pngquant -"
-                        ;;
-                esac
+                if [[ $backgroundcolorname == *-nopadding ]]; then resize="${sizes[0]}"; else resize="${sizes[1]}"; fi
+                extent="${sizes[0]}"
+                compress="pngquant -"
 
                 echo "$logo" >> /tmp/picons.log
                 convert "$backgroundcolor" \( "$logo" -background none -bordercolor none -border 100 -trim -border 1% -resize $resize -gravity center -extent $extent +repage \) -layers merge - 2>> /dev/null | $compress 2>> /tmp/picons.log > "$temp/finalpicons/picon/logos/$logoname.png"
@@ -271,8 +243,8 @@ for background in "$buildsource/backgrounds/$backgroundname"* ; do
         "$buildtools/ipkg-build.sh" -o root -g root "$temp/finalpicons" "$binaries" > /dev/null
 
         mv "$temp/finalpicons/picon" "$temp/finalpicons/$packagename"
-        tar --dereference --owner=root --group=root -cf - --directory="$temp/finalpicons" "$packagename.hardlink" --exclude="logos" | xz -9 --extreme --memlimit=40% 2>> /tmp/picons.log > "$binaries/$packagename.hardlink.tar.xz"
-        tar --owner=root --group=root -cf - --directory="$temp/finalpicons" "$packagename.symlink" | xz -9 --extreme --memlimit=40% 2>> /tmp/picons.log > "$binaries/$packagename.symlink.tar.xz"
+        tar --dereference --owner=root --group=root -cf - --directory="$temp/finalpicons" "$packagename" --exclude="logos" | xz -9 --extreme --memlimit=40% 2>> /tmp/picons.log > "$binaries/$packagename.hardlink.tar.xz"
+        tar --owner=root --group=root -cf - --directory="$temp/finalpicons" "$packagename" | xz -9 --extreme --memlimit=40% 2>> /tmp/picons.log > "$binaries/$packagename.symlink.tar.xz"
 
         find "$binaries" -exec touch -t "$timestamp" {} \;
         rm -rf "$temp/finalpicons"
