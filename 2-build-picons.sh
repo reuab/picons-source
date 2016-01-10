@@ -42,8 +42,8 @@ location="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 buildsource="$location/build-source"
 buildtools="$location/resources/tools"
 binaries="$location/build-output/binaries-$style"
-temp="/tmp/picons-source-temp"
-logfile="/tmp/picons-source.log"
+temp=$(mktemp -d)
+logfile=$(mktemp)".picons-source.log"
 
 #############################################
 ## Check if previously chosen style exists ##
@@ -118,13 +118,8 @@ fi
 ############################################################
 ## Cleanup previously created folders/files and re-create ##
 ############################################################
-if [[ -d $temp ]]; then rm -rf "$temp"; fi
-mkdir "$temp"
-
 if [[ -d $binaries ]]; then rm -rf "$binaries"; fi
 mkdir "$binaries"
-
-if [[ -f $logfile ]]; then rm $logfile; fi
 
 ##############################
 ## Determine version number ##

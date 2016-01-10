@@ -43,7 +43,7 @@ temp="/tmp"
 ##################################
 if [[ -d $location/build-input/enigma2 ]]; then
     file="$location/build-output/servicelist-enigma2-$style"
-    tempfile="$temp/$(echo $RANDOM)"
+    tempfile=$(mktemp)
     lamedb=$(<"$location/build-input/enigma2/lamedb")
     channelcount=$(cat "$location/build-input/enigma2/"*bouquet.* | grep -o '#SERVICE .*:0:.*:.*:.*:.*:.*:0:0:0' | sort -u | wc -l)
 
@@ -82,7 +82,7 @@ fi
 ########################################################
 if [[ -d $location/build-input/tvheadend ]]; then
     file="$location/build-output/servicelist-tvheadend-filemode-$style"
-    tempfile="$temp/$(echo $RANDOM)"
+    tempfile=$(mktemp)
     channelcount=$(find "$location/build-input/tvheadend/channel/config/" -maxdepth 1 -type f | wc -l)
 
     for channelfile in "$location/build-input/tvheadend/channel/config/"* ; do
@@ -137,7 +137,7 @@ if [[ -f $location/build-input/tvheadend.serverconf ]]; then
 
     # ...set file name for the service list to generate
     file="$location/build-output/servicelist-tvheadend-servermode-$style"
-    tempfile="$temp/$(echo $RANDOM)"
+    tempfile=$(mktemp)
 
     # ...if an old file with that name exists, delete it
     #[[ -f ${file} ]] && rm "${file}"
@@ -196,7 +196,7 @@ fi
 ##############################
 if [[ -f $location/build-input/channels.conf ]]; then
     file="$location/build-output/servicelist-vdr-$style"
-    tempfile="$temp/$(echo $RANDOM)"
+    tempfile=$(mktemp)
     channelcount=$(grep -o '.*:.*:.*:.*:.*:.*:.*:.*:.*:.*:.*:.*:0' "$location/build-input/channels.conf" | sort -u | wc -l)
 
     grep -o '.*:.*:.*:.*:.*:.*:.*:.*:.*:.*:.*:.*:0' "$location/build-input/channels.conf" | sort -u | while read channel ; do
