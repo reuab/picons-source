@@ -31,8 +31,8 @@ Explanation of logo types:
 default=standard logo as used by the tv station, looks good on background intended by tv station
 light=modified default logo that makes darker parts lighter, looks good on darker backgrounds
 dark=modified default logo that makes lighter parts darker, looks good on lighter backgrounds
-white=fully white logo, no colors allowed, looks good on dark backgrounds
-black=fully black logo, no colors allowed, looks good on light backgrounds
+white=fully white logo, no colors allowed (indexed 1-bit, black/white), looks good on dark backgrounds
+black=fully black logo, no colors allowed (indexed 1-bit, black/white), looks good on light backgrounds
 ```
 
 # SAMPLES
