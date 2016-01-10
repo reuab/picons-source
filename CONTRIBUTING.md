@@ -24,7 +24,7 @@ __Logo:__
 - It's not allowed for `svg` files to contain base64 encoded images.
 - If it's possible to easily trace your png with Inkscape, only the `svg` is allowed. In most cases this is possible.
 - Quality should be as high as possible with transparancy.
-- A `default` version of a logo should get the identifier `.default` at the end of the filename, a `light` version should get the identifier `.light`, a `default` version must always exist, a `light` version is optional. Additional types are possible, by using for example `dark`, `black`, `white`. At the moment only `default` and `light` types are being included in this project.
+- A `default` version of a logo should get the identifier `.default` at the end of the filename, additional types are possible, by using for example `.light`, `.dark`, `.black` or `.white` as an identifier.
 
 Explanation of logo types:
 ```
