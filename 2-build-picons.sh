@@ -175,28 +175,32 @@ for background in "$buildsource/backgrounds/$backgroundname"* ; do
         OLDIFS=$IFS
         IFS="-"
         sizes=($backgroundname)
+        IFS="."
+        logotype=($backgroundcolorname)
         IFS=$OLDIFS
-        backgroundname="${sizes[0]}"
-
-        echo "$(date +'%H:%M:%S') -----------------------------------------------------------"
-        echo "$(date +'%H:%M:%S') - Creating picons: $style.$backgroundname.$backgroundcolorname"
+        
+        backgroundname=${sizes[0]}
+        logotype=${logotype[0]}
 
         if [[ $backgroundcolorname == *-nopadding ]]; then
-            resize="${sizes[0]}"
+            resize=${sizes[0]}
         else
-            resize="${sizes[1]}"
+            resize=${sizes[1]}
         fi
 
         mkdir -p "$temp/finalpicons/picon/logos"
 
-        for logo in "$temp/newbuildsource/logos/"*.black.png ; do
+        echo "$(date +'%H:%M:%S') -----------------------------------------------------------"
+        echo "$(date +'%H:%M:%S') - Creating picons: $style.$backgroundname.$backgroundcolorname"
+
+        for logo in "$temp/newbuildsource/logos/"*.default.png ; do
             ((currentlogo++))
             echo -ne "           Converting logo: $currentlogo/$logocount"\\r
 
             logoname=$(basename ${logo%.*.*})
 
-            if [[ $backgroundcolorname == white.on.* ]] && [[ -f $temp/newbuildsource/logos/$logoname.white.png ]]; then
-                logo="$temp/newbuildsource/logos/$logoname.white.png"
+            if [[ -f $temp/newbuildsource/logos/$logoname.$logotype.png ]]; then
+                logo="$temp/newbuildsource/logos/$logoname.$logotype.png"
             fi
 
             echo "$logo" >> $logfile
