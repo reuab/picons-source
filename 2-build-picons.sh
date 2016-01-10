@@ -42,8 +42,8 @@ location="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 buildsource="$location/build-source"
 buildtools="$location/resources/tools"
 binaries="$location/build-output/binaries-$style"
-temp=$(mktemp -d)
-logfile=$(mktemp)".picons-source.log"
+temp=$(mktemp -d --suffix=.picons)
+logfile=$(mktemp --suffix=.picons.log)
 
 #############################################
 ## Check if previously chosen style exists ##
