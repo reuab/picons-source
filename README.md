@@ -42,8 +42,8 @@ TIP: To automate the building process, you can also use some of the following co
 ./2-build-picons.sh snp all
 ./2-build-picons.sh snp 100x60-86x46
 ./2-build-picons.sh snp 100x60-86x46 all
-./2-build-picons.sh srp 100x60-86x46 default.on.reflection
-./2-build-picons.sh snp-full 100x60-86x46 default.on.reflection
+./2-build-picons.sh srp 100x60-86x46 dark.on.reflection
+./2-build-picons.sh snp-full 100x60-86x46 dark.on.reflection
 ...
 ```
 
