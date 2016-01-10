@@ -42,12 +42,8 @@ location="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 buildsource="$location/build-source"
 buildtools="$location/resources/tools"
 binaries="$location/build-output/binaries-$style"
-
-if [[ -d /dev/shm ]] && [[ ! -f /.dockerinit ]]; then
-    temp="/dev/shm/picons-tmp"
-else
-    temp="/tmp/picons-tmp"
-fi
+temp="/tmp/picons-source-temp"
+logfile="/tmp/picons-source.log"
 
 #############################################
 ## Check if previously chosen style exists ##
@@ -128,7 +124,7 @@ mkdir "$temp"
 if [[ -d $binaries ]]; then rm -rf "$binaries"; fi
 mkdir "$binaries"
 
-if [[ -f /tmp/picons.log ]]; then rm /tmp/picons.log; fi
+if [[ -f $logfile ]]; then rm $logfile; fi
 
 ##############################
 ## Determine version number ##
@@ -164,8 +160,9 @@ echo "$(date +'%H:%M:%S') - Creating symlinks and copying logos"
 "$buildtools/create-symlinks+copy-logos.sh" "$location/build-output/servicelist-" "$temp/newbuildsource" "$buildsource" "$style" "$location"
 
 echo "$(date +'%H:%M:%S') - Converting svg files"
-for file in $(find "$temp/newbuildsource/logos" -type f -name '*.svg'); do
-    rsvg-convert -w 400 -h 400 -a -f png -o ${file%.*}.png "$file"
+#for file in $(find "$temp/newbuildsource/logos" -type f -name '*.svg'); do
+for file in "$temp/newbuildsource/logos/"*.svg; do
+    rsvg-convert -w 800 -h 450 -a -f png -o ${file%.*}.png "$file"
     rm "$file"
 done
 
@@ -175,11 +172,9 @@ done
 logocount=$(find "$temp/newbuildsource/logos/" -maxdepth 2 -type f | wc -l)
 
 for background in "$buildsource/backgrounds/$backgroundname"* ; do
-
     backgroundname=$(basename $background)
 
     for backgroundcolor in "$buildsource/backgrounds/$backgroundname/$backgroundcolorname"*.png ; do
-
         currentlogo=""
         backgroundcolorname=$(basename ${backgroundcolor%.*})
 
@@ -192,33 +187,27 @@ for background in "$buildsource/backgrounds/$backgroundname"* ; do
         echo "$(date +'%H:%M:%S') -----------------------------------------------------------"
         echo "$(date +'%H:%M:%S') - Creating picons: $style.$backgroundname.$backgroundcolorname"
 
-        mkdir -p "$temp/finalpicons/picon"
+        if [[ $backgroundcolorname == *-nopadding ]]; then
+            resize="${sizes[0]}"
+        else
+            resize="${sizes[1]}"
+        fi
+
+        mkdir -p "$temp/finalpicons/picon/logos"
 
         for logo in "$temp/newbuildsource/logos/"*.black.png ; do
-            if [[ -f $logo ]]; then
-                ((currentlogo++))
-                echo -ne "           Converting logo: $currentlogo/$logocount"\\r
+            ((currentlogo++))
+            echo -ne "           Converting logo: $currentlogo/$logocount"\\r
 
-                logoname=$(basename ${logo%.*.*})
+            logoname=$(basename ${logo%.*.*})
 
-                if [[ ! -d $temp/finalpicons/picon/logos ]]; then
-                    mkdir -p "$temp/finalpicons/picon/logos"
-                fi
-
-                if [[ $backgroundcolorname == white.on.* ]]; then
-                    if [[ -f $temp/newbuildsource/logos/$logoname.white.png ]]; then
-                        logo="$temp/newbuildsource/logos/$logoname.white.png"
-                    fi
-                fi
-
-                if [[ $backgroundcolorname == *-nopadding ]]; then resize="${sizes[0]}"; else resize="${sizes[1]}"; fi
-                extent="${sizes[0]}"
-                compress="pngquant -"
-
-                echo "$logo" >> /tmp/picons.log
-                convert "$backgroundcolor" \( "$logo" -background none -bordercolor none -border 100 -trim -border 1% -resize $resize -gravity center -extent $extent +repage \) -layers merge - 2>> /dev/null | $compress 2>> /tmp/picons.log > "$temp/finalpicons/picon/logos/$logoname.png"
-                #cat "$backgroundcolor" | git lfs smudge 2>> /tmp/picons.log | convert - \( "$logo" -background none -bordercolor none -border 100 -trim -border 1% -resize $resize -gravity center -extent $extent +repage \) -layers merge - 2>> /dev/null | $compress 2>> /tmp/picons.log > "$temp/finalpicons/picon/logos/$logoname.png"
+            if [[ $backgroundcolorname == white.on.* ]] && [[ -f $temp/newbuildsource/logos/$logoname.white.png ]]; then
+                logo="$temp/newbuildsource/logos/$logoname.white.png"
             fi
+
+            echo "$logo" >> $logfile
+            convert "$backgroundcolor" \( "$logo" -background none -bordercolor none -border 100 -trim -border 1% -resize $resize -gravity center -extent ${sizes[0]} +repage \) -layers merge - 2>> $logfile | pngquant - 2>> $logfile > "$temp/finalpicons/picon/logos/$logoname.png"
+            #cat "$backgroundcolor" | git lfs smudge 2>> $logfile | convert - \( "$logo" -background none -bordercolor none -border 100 -trim -border 1% -resize $resize -gravity center -extent ${sizes[0]} +repage \) -layers merge - 2>> $logfile | pngquant - 2>> $logfile > "$temp/finalpicons/picon/logos/$logoname.png"
         done
 
         echo "$(date +'%H:%M:%S') - Creating binary packages: $style.$backgroundname.$backgroundcolorname"
@@ -239,17 +228,18 @@ for background in "$buildsource/backgrounds/$backgroundname"* ; do
 			License: unknown
 			Priority: optional
 		EOF
-        find "$temp/finalpicons" -exec touch --no-dereference -t "$timestamp" {} \;
-        "$buildtools/ipkg-build.sh" -o root -g root "$temp/finalpicons" "$binaries" > /dev/null
 
+        find "$temp/finalpicons" -exec touch --no-dereference -t "$timestamp" {} \;
+
+        "$buildtools/ipkg-build.sh" -o root -g root "$temp/finalpicons" "$binaries" > /dev/null
         mv "$temp/finalpicons/picon" "$temp/finalpicons/$packagename"
-        tar --dereference --owner=root --group=root -cf - --directory="$temp/finalpicons" "$packagename" --exclude="logos" | xz -9 --extreme --memlimit=40% 2>> /tmp/picons.log > "$binaries/$packagename.hardlink.tar.xz"
-        tar --owner=root --group=root -cf - --directory="$temp/finalpicons" "$packagename" | xz -9 --extreme --memlimit=40% 2>> /tmp/picons.log > "$binaries/$packagename.symlink.tar.xz"
+        tar --dereference --owner=root --group=root -cf - --directory="$temp/finalpicons" "$packagename" --exclude="logos" | xz -9 --extreme --memlimit=40% 2>> $logfile > "$binaries/$packagename.hardlink.tar.xz"
+        tar --owner=root --group=root -cf - --directory="$temp/finalpicons" "$packagename" | xz -9 --extreme --memlimit=40% 2>> $logfile > "$binaries/$packagename.symlink.tar.xz"
 
         find "$binaries" -exec touch -t "$timestamp" {} \;
         rm -rf "$temp/finalpicons"
-
     done
+
     backgroundcolorname=""
 done
 

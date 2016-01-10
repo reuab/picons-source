@@ -36,12 +36,7 @@ fi
 #####################################
 location=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 index=$(<"$location/build-source/$style-index")
-
-if [[ -d /dev/shm ]] && [[ ! -f /.dockerinit ]]; then
-    temp="/dev/shm"
-else
-    temp="/tmp"
-fi
+temp="/tmp"
 
 ##################################
 ## Enigma2 servicelist creation ##
