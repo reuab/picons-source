@@ -4,7 +4,7 @@ All the full resolution channel logos and their link to the actual channel (=ser
 
 # BUILDING THE PICONS
 
-[Ubuntu](http://www.ubuntu.com/download), [Cygwin on Windows](https://cygwin.com/install.html) and [Docker](https://www.docker.com/toolbox) are tested and supported platforms for building the picons.
+[Ubuntu](http://www.ubuntu.com/download) and [Cygwin on Windows](https://cygwin.com/install.html) are tested and supported platforms for building the picons.
 
 Download the repository by using the following command:
 ```
@@ -40,26 +40,11 @@ TIP: To automate the building process, you can also use some of the following co
 ./2-build-picons.sh snp
 ./2-build-picons.sh srp
 ./2-build-picons.sh snp all
-./2-build-picons.sh snp 100x60
-./2-build-picons.sh snp 100x60 all
-./2-build-picons.sh srp 100x60 black.on.reflection
-./2-build-picons.sh snp-full 100x60 black.on.reflection
+./2-build-picons.sh snp 100x60-86x46
+./2-build-picons.sh snp 100x60-86x46 all
+./2-build-picons.sh srp 100x60-86x46 black.on.reflection
+./2-build-picons.sh snp-full 100x60-86x46 black.on.reflection
 ...
-```
-
-# DOCKER
-
-If you would like to use Docker on Windows, which is recommended, because it's considerably faster than Cygwin. Use the following commands:
-
-```
-mkdir -p ~/Desktop/picons-source/build-input
-mkdir -p ~/Desktop/picons-source/build-output
-docker pull picons/picons
-docker run -t -i -v //c/Users/<USER_NAME>/Desktop/picons-source/build-input:/tmp/picons-source/build-input -v //c/Users/<USER_NAME>/Desktop/picons-source/build-output:/tmp/picons-source/build-output picons/picons
-git pull
-./1-build-servicelist.sh
-./2-build-picons.sh
-exit
 ```
 
 # CONTRIBUTING
