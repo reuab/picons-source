@@ -179,7 +179,7 @@ for background in "$buildsource/backgrounds/$backgroundname"* ; do
         logotype=($backgroundcolorname)
         IFS=$OLDIFS
         
-        backgroundname=${sizes[0]}
+        resolution=${sizes[0]}
         logotype=${logotype[0]}
 
         if [[ $backgroundcolorname == *-nopadding ]]; then
@@ -191,7 +191,7 @@ for background in "$buildsource/backgrounds/$backgroundname"* ; do
         mkdir -p "$temp/finalpicons/picon/logos"
 
         echo "$(date +'%H:%M:%S') -----------------------------------------------------------"
-        echo "$(date +'%H:%M:%S') - Creating picons: $style.$backgroundname.$backgroundcolorname"
+        echo "$(date +'%H:%M:%S') - Creating picons: $style.$resolution.$backgroundcolorname"
 
         for logo in "$temp/newbuildsource/logos/"*.default.png ; do
             ((currentlogo++))
@@ -208,20 +208,20 @@ for background in "$buildsource/backgrounds/$backgroundname"* ; do
             #cat "$backgroundcolor" | git lfs smudge 2>> $logfile | convert - \( "$logo" -background none -bordercolor none -border 100 -trim -border 1% -resize $resize -gravity center -extent ${sizes[0]} +repage \) -layers merge - 2>> $logfile | pngquant - 2>> $logfile > "$temp/finalpicons/picon/logos/$logoname.png"
         done
 
-        echo "$(date +'%H:%M:%S') - Creating binary packages: $style.$backgroundname.$backgroundcolorname"
+        echo "$(date +'%H:%M:%S') - Creating binary packages: $style.$resolution.$backgroundcolorname"
         cp --no-dereference "$temp/newbuildsource/symlinks/"* "$temp/finalpicons/picon"
 
-        packagename="$style.$backgroundname.${backgroundcolorname}_${version}"
+        packagename="$style.$resolution.${backgroundcolorname}_${version}"
 
         mkdir "$temp/finalpicons/CONTROL" ; cat > "$temp/finalpicons/CONTROL/control" <<-EOF
-			Package: enigma2-plugin-picons-$style.$backgroundname.$backgroundcolorname
+			Package: enigma2-plugin-picons-$style.$resolution.$backgroundcolorname
 			Version: $version
 			Section: base
 			Architecture: all
 			Maintainer: https://picons.xyz
 			Source: https://picons.xyz
-			Description: $style.$backgroundname.$backgroundcolorname
-			OE: enigma2-plugin-picons-$style.$backgroundname.$backgroundcolorname
+			Description: $style.$resolution.$backgroundcolorname
+			OE: enigma2-plugin-picons-$style.$resolution.$backgroundcolorname
 			HomePage: https://picons.xyz
 			License: unknown
 			Priority: optional
