@@ -60,61 +60,6 @@ else
     echo "You are using an unsupported style! Keep it tidy!"
 fi
 
-###########################################################
-## Ask the user which resolution and background to build ##
-###########################################################
-if [[ -z $2 ]]; then
-    for background in "$buildsource/backgrounds/"* ; do
-        backgroundname=$(basename $background)
-        backgrounds="$backgroundname $backgrounds"
-    done
-
-    echo "Which resolution would you like to build?"
-    select choice in $backgrounds; do
-        if [[ ! -z $choice ]]; then
-            backgroundname=$choice; break
-        fi
-    done
-
-    for backgroundcolor in "$buildsource/backgrounds/$backgroundname/"* ; do
-        backgroundcolorname=$(basename ${backgroundcolor%.*})
-        backgroundcolors="$backgroundcolorname $backgroundcolors"
-    done
-
-    echo "Which background would you like to build?"
-    select choice in $backgroundcolors; do
-        if [[ ! -z $choice ]]; then
-            backgroundcolorname=$choice; break
-        fi
-    done
-else
-    if [[ $2 = "all" ]]; then
-        backgroundname=""
-        backgroundcolorname=""
-    else
-        backgroundname=$2
-        if [[ -z $3 ]]; then
-            for backgroundcolor in "$buildsource/backgrounds/$backgroundname/"* ; do
-                backgroundcolorname=$(basename ${backgroundcolor%.*})
-                backgroundcolors="$backgroundcolorname $backgroundcolors"
-            done
-
-            echo "Which background would you like to build?"
-            select choice in $backgroundcolors; do
-                if [[ ! -z $choice ]]; then
-                    backgroundcolorname=$choice; break
-                fi
-            done
-        else
-            if [[ $3 = "all" ]]; then
-                backgroundcolorname=""
-            else
-                backgroundcolorname=$3
-            fi
-        fi
-    fi
-fi
-
 ############################################################
 ## Cleanup previously created folders/files and re-create ##
 ############################################################
@@ -161,82 +106,77 @@ done
 ####################################################################
 ## Start the actual conversion to picons and creation of packages ##
 ####################################################################
-logocount=$(find "$temp/newbuildsource/logos/" -maxdepth 2 -type f | wc -l)
+logocount=$(find "$temp/newbuildsource/logos/" -maxdepth 1 -type f | wc -l)
 
-for background in "$buildsource/backgrounds/$backgroundname"* ; do
-    backgroundname=$(basename $background)
+if [[ -f "$location/build-input/backgrounds.conf" ]]; then
+    backgroundsconf="$location/build-input/backgrounds.conf"
+else
+    echo "$(date +'%H:%M:%S') - No \"backgrounds.conf\" file found in \"build-input\", using default file!"
+    backgroundsconf="$buildsource/backgrounds/backgrounds.conf"
+fi
 
-    for backgroundcolor in "$buildsource/backgrounds/$backgroundname/$backgroundcolorname"*.png ; do
-        currentlogo=""
-        backgroundcolorname=$(basename ${backgroundcolor%.*})
+grep -v -e '^#' -e '^$' $backgroundsconf | while read lines ; do
+    currentlogo=""
 
-        OLDIFS=$IFS
-        IFS="-"
-        sizes=($backgroundname)
-        IFS="."
-        logotype=($backgroundcolorname)
-        IFS=$OLDIFS
-        
-        resolution=${sizes[0]}
-        logotype=${logotype[0]}
+    OLDIFS=$IFS
+    IFS=";"
+    line=($lines)
+    IFS=$OLDIFS
 
-        if [[ $backgroundcolorname == *-nopadding ]]; then
-            resize=${sizes[0]}
-        else
-            resize=${sizes[1]}
+    resolution=${line[0]}
+    resize=${line[1]}
+    logotype=${line[2]}
+    background=${line[3]}
+
+    packagenamenoversion="$style.$resolution-$resize.$logotype.on.$background"
+    packagename="$style.$resolution-$resize.$logotype.on.${background}_${version}"
+
+    mkdir -p "$temp/finalpicons/picon/logos"
+
+    echo "$(date +'%H:%M:%S') -----------------------------------------------------------"
+    echo "$(date +'%H:%M:%S') - Creating picons: $packagenamenoversion"
+
+    for logo in "$temp/newbuildsource/logos/"*.default.png ; do
+        ((currentlogo++))
+        echo -ne "           Converting logo: $currentlogo/$logocount"\\r
+
+        logoname=$(basename ${logo%.*.*})
+
+        if [[ -f $temp/newbuildsource/logos/$logoname.$logotype.png ]]; then
+            logo="$temp/newbuildsource/logos/$logoname.$logotype.png"
         fi
 
-        mkdir -p "$temp/finalpicons/picon/logos"
-
-        echo "$(date +'%H:%M:%S') -----------------------------------------------------------"
-        echo "$(date +'%H:%M:%S') - Creating picons: $style.$resolution.$backgroundcolorname"
-
-        for logo in "$temp/newbuildsource/logos/"*.default.png ; do
-            ((currentlogo++))
-            echo -ne "           Converting logo: $currentlogo/$logocount"\\r
-
-            logoname=$(basename ${logo%.*.*})
-
-            if [[ -f $temp/newbuildsource/logos/$logoname.$logotype.png ]]; then
-                logo="$temp/newbuildsource/logos/$logoname.$logotype.png"
-            fi
-
-            echo "$logo" >> $logfile
-            convert "$backgroundcolor" \( "$logo" -background none -bordercolor none -border 100 -trim -border 1% -resize $resize -gravity center -extent ${sizes[0]} +repage \) -layers merge - 2>> $logfile | pngquant - 2>> $logfile > "$temp/finalpicons/picon/logos/$logoname.png"
-            #cat "$backgroundcolor" | git lfs smudge 2>> $logfile | convert - \( "$logo" -background none -bordercolor none -border 100 -trim -border 1% -resize $resize -gravity center -extent ${sizes[0]} +repage \) -layers merge - 2>> $logfile | pngquant - 2>> $logfile > "$temp/finalpicons/picon/logos/$logoname.png"
-        done
-
-        echo "$(date +'%H:%M:%S') - Creating binary packages: $style.$resolution.$backgroundcolorname"
-        cp --no-dereference "$temp/newbuildsource/symlinks/"* "$temp/finalpicons/picon"
-
-        packagename="$style.$resolution.${backgroundcolorname}_${version}"
-
-        mkdir "$temp/finalpicons/CONTROL" ; cat > "$temp/finalpicons/CONTROL/control" <<-EOF
-			Package: enigma2-plugin-picons-$style.$resolution.$backgroundcolorname
-			Version: $version
-			Section: base
-			Architecture: all
-			Maintainer: https://picons.xyz
-			Source: https://picons.xyz
-			Description: $style.$resolution.$backgroundcolorname
-			OE: enigma2-plugin-picons-$style.$resolution.$backgroundcolorname
-			HomePage: https://picons.xyz
-			License: unknown
-			Priority: optional
-		EOF
-
-        find "$temp/finalpicons" -exec touch --no-dereference -t "$timestamp" {} \;
-
-        "$buildtools/ipkg-build.sh" -o root -g root "$temp/finalpicons" "$binaries" > /dev/null
-        mv "$temp/finalpicons/picon" "$temp/finalpicons/$packagename"
-        tar --dereference --owner=root --group=root -cf - --directory="$temp/finalpicons" "$packagename" --exclude="logos" | xz -9 --extreme --memlimit=40% 2>> $logfile > "$binaries/$packagename.hardlink.tar.xz"
-        tar --owner=root --group=root -cf - --directory="$temp/finalpicons" "$packagename" | xz -9 --extreme --memlimit=40% 2>> $logfile > "$binaries/$packagename.symlink.tar.xz"
-
-        find "$binaries" -exec touch -t "$timestamp" {} \;
-        rm -rf "$temp/finalpicons"
+        echo "$logo" >> $logfile
+        convert "$buildsource/backgrounds/$resolution/$background.png" \( "$logo" -background none -bordercolor none -border 100 -trim -border 1% -resize $resize -gravity center -extent $resolution +repage \) -layers merge - 2>> $logfile | pngquant - 2>> $logfile > "$temp/finalpicons/picon/logos/$logoname.png"
+        #cat "$buildsource/backgrounds/$resolution/$background.png" | git lfs smudge 2>> $logfile | convert - \( "$logo" -background none -bordercolor none -border 100 -trim -border 1% -resize $resize -gravity center -extent $resolution +repage \) -layers merge - 2>> $logfile | pngquant - 2>> $logfile > "$temp/finalpicons/picon/logos/$logoname.png"
     done
 
-    backgroundcolorname=""
+    echo "$(date +'%H:%M:%S') - Creating binary packages: $packagenamenoversion"
+    cp --no-dereference "$temp/newbuildsource/symlinks/"* "$temp/finalpicons/picon"
+
+    mkdir "$temp/finalpicons/CONTROL" ; cat > "$temp/finalpicons/CONTROL/control" <<-EOF
+		Package: enigma2-plugin-picons-$packagenamenoversion
+		Version: $version
+		Section: base
+		Architecture: all
+		Maintainer: https://picons.xyz
+		Source: https://picons.xyz
+		Description: $packagenamenoversion
+		OE: enigma2-plugin-picons-$packagenamenoversion
+		HomePage: https://picons.xyz
+		License: unknown
+		Priority: optional
+	EOF
+
+    find "$temp/finalpicons" -exec touch --no-dereference -t "$timestamp" {} \;
+
+    "$buildtools/ipkg-build.sh" -o root -g root "$temp/finalpicons" "$binaries" > /dev/null
+    mv "$temp/finalpicons/picon" "$temp/finalpicons/$packagename"
+    tar --dereference --owner=root --group=root -cf - --directory="$temp/finalpicons" "$packagename" --exclude="logos" | xz -9 --extreme --memlimit=40% 2>> $logfile > "$binaries/$packagename.hardlink.tar.xz"
+    tar --owner=root --group=root -cf - --directory="$temp/finalpicons" "$packagename" | xz -9 --extreme --memlimit=40% 2>> $logfile > "$binaries/$packagename.symlink.tar.xz"
+
+    find "$binaries" -exec touch -t "$timestamp" {} \;
+    rm -rf "$temp/finalpicons"
 done
 
 ################################################################################

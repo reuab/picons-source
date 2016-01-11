@@ -31,20 +31,12 @@ Take a look at the folder `/tmp/picons-source/build-output` for the binaries.
 TIP: To automate the building process, you can also use some of the following commands:
 
 ```
-./1-build-servicelist.sh srp
 ./1-build-servicelist.sh snp
-./2-build-picons.sh srp-full
-./2-build-picons.sh srp-full all
-./2-build-picons.sh snp-full
-./2-build-picons.sh snp-full all
+./1-build-servicelist.sh srp
 ./2-build-picons.sh snp
 ./2-build-picons.sh srp
-./2-build-picons.sh snp all
-./2-build-picons.sh snp 100x60-86x46
-./2-build-picons.sh snp 100x60-86x46 all
-./2-build-picons.sh srp 100x60-86x46 dark.on.reflection
-./2-build-picons.sh snp-full 100x60-86x46 dark.on.reflection
-...
+./2-build-picons.sh snp-full
+./2-build-picons.sh srp-full
 ```
 
 # CONTRIBUTING
