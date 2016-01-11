@@ -138,9 +138,6 @@ if [[ -f $location/build-input/tvheadend.serverconf ]]; then
     file="$location/build-output/servicelist-tvheadend-servermode-$style"
     tempfile=$(mktemp --suffix=.servicelist)
 
-    # ...if an old file with that name exists, delete it
-    #[[ -f ${file} ]] && rm "${file}"
-
     # ...the server url
     [[ -n $TVH_USER ]] && url="http://$TVH_USER:$TVH_PASS@$TVH_HOST:$TVH_PORT" || url="http://$TVH_HOST:$TVH_PORT"
   
