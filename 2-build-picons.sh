@@ -146,7 +146,7 @@ grep -v -e '^#' -e '^$' $backgroundsconf | while read lines ; do
             logo="$temp/newbuildsource/logos/$logoname.$logotype.png"
         fi
 
-        echo "$logo" >> $logfile
+        #echo "$logo" >> $logfile
         convert "$buildsource/backgrounds/$resolution/$background.png" \( "$logo" -background none -bordercolor none -border 100 -trim -border 1% -resize $resize -gravity center -extent $resolution +repage \) -layers merge - 2>> $logfile | pngquant - 2>> $logfile > "$temp/finalpicons/picon/logos/$logoname.png"
         #cat "$buildsource/backgrounds/$resolution/$background.png" | git lfs smudge 2>> $logfile | convert - \( "$logo" -background none -bordercolor none -border 100 -trim -border 1% -resize $resize -gravity center -extent $resolution +repage \) -layers merge - 2>> $logfile | pngquant - 2>> $logfile > "$temp/finalpicons/picon/logos/$logoname.png"
     done
