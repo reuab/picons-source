@@ -139,7 +139,7 @@ echo "$(date +'%H:%M:%S') - Version: $version"
 #############################################
 ## Some basic checking of the source files ##
 #############################################
-chmod -R 755 "$buildtools/"*.sh
+#chmod -R 755 "$buildtools/"*.sh
 
 echo "$(date +'%H:%M:%S') - Checking index"
 "$buildtools/check-index.sh" "$buildsource" "srp"
