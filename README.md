@@ -68,13 +68,10 @@ The file `tvheadend.serverconf` can contain the following values:
 ```sh
 # hostname or ip address of tvheadend server (default: "localhost")
 TVH_HOST="localhost"
-
 # port of tvheadend API (default: 9981)
 TVH_PORT="9981"
-
 # tvheadend user name
 TVH_USER=""
-
 # tvheadend password of above user
 TVH_PASS=""
 ```
@@ -111,7 +108,6 @@ Example:
 ```
 
 ## build-output
----
 
 This folder will contain the output from the build. A folder or two and one or more files like:
 
@@ -127,11 +123,9 @@ servicelist-vdr-srp
 ```
 
 ## build-source
----
 
 This is where all the channel logos go and how they are linked to the serviceref or a simplified version of the name.
 
 ## resources/tools
----
 
 Some additional scripts used by the main scripts.
