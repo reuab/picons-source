@@ -11,7 +11,7 @@ Download the repository by using the following command:
 git clone https://github.com/picons/picons-source.git /tmp/picons-source
 ```
 
-Next, copy your `enigma2` folder, your `tvheadend` folder or your `channels.conf` file to `/tmp/picons-source/build-input`. See the following [README](https://github.com/picons/picons-source/blob/master/build-input/README.md) for more info.
+Next, copy your `enigma2` folder, your `tvheadend` folder or your `channels.conf` file to `/tmp/picons-source/build-input`. See [below](https://github.com/picons/picons-source#build-input) for more info.
 
 We will start the creation of the servicelist with the following command:
 ```
@@ -87,7 +87,7 @@ If you're running TvHeadend on the same machine, even an empty file (defaulting 
 ###### VDR servicelist creation
 If you're using VDR together with the Kodi addon xvdr, copy your `channels.conf` file to this folder.
 
-###### backgrounds.conf
+###### Configuring which backgrounds to build
 
 A file `backgrounds.conf` should be placed in this folder. If no file is found, the default file will be used.
 
