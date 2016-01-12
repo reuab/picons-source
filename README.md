@@ -46,3 +46,95 @@ So you would like to contribute? Have a look [here](https://github.com/picons/pi
 # SNP - SERVICE NAME PICONS
 
 The idea behind SNP is that a simplified name derived from the channel name is used to lookup a channel logo. The idea and code was first implemented by OpenVIX for the Enigma2 tuners. Any developer currently using the serviceref method as a way to lookup a logo and would like to implement this alternative, can find the code used to generate the simplified name at the OpenVIX github [repository](https://github.com/OpenViX/enigma2/blob/master/lib/python/Components/Renderer/Picon.py#L88-L89).
+
+# FOLDER OVERVIEW
+
+###### build-input
+---
+
+### CREATING A SERVICELIST
+
+#### Enigma2
+Copy your `enigma2` folder, probably located in `/etc` on your box into this folder.
+
+#### TvHeadend
+TvHeadend users, have two options:
+
+1) Use the server generated configuration files by copying your `tvheadend` configuration folder, probably located in `/home/hts/.hts` on your server into this folder.
+
+2) Use the servers API and directly ask the server about all channels by creating a file called `tvheadend.serverconf`.
+
+The first option has the advantage to work even without a running server. The advantage of the second option is that you don't have to copy files around, automatically you'll have the most accurate channel list and it's about 20% faster.
+
+The file `tvheadend.serverconf` can contain the following values:
+
+```sh
+# hostname or ip address of tvheadend server (default: "localhost")
+TVH_HOST="localhost"
+
+# port of tvheadend API (default: 9981)
+TVH_PORT="9981"
+
+# tvheadend user name
+TVH_USER=""
+
+# tvheadend password of above user
+TVH_PASS=""
+```
+
+You need only those values in your file which are different from the default values. For most people this will be a file with a single host name or host IP address.
+
+```sh
+TVH_HOST="my.tvheadend.server"
+```
+
+If you're running TvHeadend on the same machine, even an empty file (defaulting to `localhost`) should be sufficient.
+
+#### VDR
+If you're using VDR together with the Kodi addon xvdr, copy your `channels.conf` file to this folder.
+
+### BUILDING THE PICONS
+
+A file `backgrounds.conf` should be placed in this folder. If no file is found, the default file will be used.
+
+Syntax:
+```
+<resolution>;<resolution-padding>;<logotype>;<background>
+```
+
+Example:
+```
+# My own awesome settings
+100x60;86x46;dark;reflection
+100x60;100x60;default;transparent
+100x60;100x60;light;transparent
+
+# My commented settings
+#800x450;800x450;light;transparent
+```
+
+###### build-output
+---
+
+This folder will contain the output from the build. A folder or two and one or more files like:
+
+```
+binaries-snp/
+binaries-srp/
+servicelist-enigma2-snp
+servicelist-enigma2-srp
+servicelist-tvheadend-snp
+servicelist-tvheadend-srp
+servicelist-vdr-snp
+servicelist-vdr-srp
+```
+
+###### build-source
+---
+
+This is where all the channel logos go and how they are linked to the serviceref or a simplified version of the name.
+
+###### resources/tools
+---
+
+Some additional scripts used by the main scripts.
