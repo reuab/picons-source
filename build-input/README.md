@@ -1,4 +1,4 @@
-# Creating a servicelist
+# CREATING A SERVICELIST
 
 ### Enigma2
 Copy your `enigma2` folder, probably located in `/etc` on your box into this folder.
@@ -39,7 +39,7 @@ If you're running TvHeadend on the same machine, even an empty file (defaulting 
 ### VDR
 If you're using VDR together with the Kodi addon xvdr, copy your `channels.conf` file to this folder.
 
-# Building the picons
+# BUILDING THE PICONS
 
 A file `backgrounds.conf` should be placed in this folder. If no file is found, the default file will be used.
 
