@@ -49,15 +49,12 @@ The idea behind SNP is that a simplified name derived from the channel name is u
 
 # FOLDER OVERVIEW
 
-###### build-input
----
+## build-input
 
-### CREATING A SERVICELIST
-
-#### Enigma2
+###### Enigma2 servicelist creation
 Copy your `enigma2` folder, probably located in `/etc` on your box into this folder.
 
-#### TvHeadend
+###### TvHeadend servicelist creation
 TvHeadend users, have two options:
 
 1) Use the server generated configuration files by copying your `tvheadend` configuration folder, probably located in `/home/hts/.hts` on your server into this folder.
@@ -90,10 +87,10 @@ TVH_HOST="my.tvheadend.server"
 
 If you're running TvHeadend on the same machine, even an empty file (defaulting to `localhost`) should be sufficient.
 
-#### VDR
+###### VDR servicelist creation
 If you're using VDR together with the Kodi addon xvdr, copy your `channels.conf` file to this folder.
 
-### BUILDING THE PICONS
+###### backgrounds.conf
 
 A file `backgrounds.conf` should be placed in this folder. If no file is found, the default file will be used.
 
@@ -113,7 +110,7 @@ Example:
 #800x450;800x450;light;transparent
 ```
 
-###### build-output
+## build-output
 ---
 
 This folder will contain the output from the build. A folder or two and one or more files like:
@@ -129,12 +126,12 @@ servicelist-vdr-snp
 servicelist-vdr-srp
 ```
 
-###### build-source
+## build-source
 ---
 
 This is where all the channel logos go and how they are linked to the serviceref or a simplified version of the name.
 
-###### resources/tools
+## resources/tools
 ---
 
 Some additional scripts used by the main scripts.
