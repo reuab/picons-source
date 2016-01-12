@@ -42,7 +42,3 @@ Thumbs.db
 
 # Project specific #
 ####################
-build-input/*
-!build-input/README.md
-build-output/*
-!build-output/README.md
