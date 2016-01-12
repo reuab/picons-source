@@ -1,3 +1,21 @@
+A file `backgrounds.conf` should be placed in this folder. If no file is found, the default file will be used.
+
+Syntax:
+```
+<resolution>;<resolution-padding>;<logotype>;<background>
+```
+
+Example:
+```
+# My own awesome settings
+100x60;86x46;dark;reflection
+100x60;100x60;default;transparent
+100x60;100x60;light;transparent
+
+# My commented settings
+#800x450;800x450;light;transparent
+```
+
 ### Enigma2
 Copy your `enigma2` folder, probably located in `/etc` on your box into this folder.
 
