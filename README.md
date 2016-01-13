@@ -11,22 +11,16 @@ Download the repository by using the following command:
 git clone https://github.com/picons/picons-source.git /tmp/picons-source
 ```
 
-Next, copy your `enigma2` folder, your `tvheadend` folder or your `channels.conf` file to `/tmp/picons-source/build-input`. See [below](https://github.com/picons/picons-source#build-input) for more info.
+Next, copy the required files to the folder [build-input](https://github.com/picons/picons-source#build-input).
 
-We will start the creation of the servicelist with the following command:
+We will start the creation of the servicelist and the picons with the following commands:
 ```
-/tmp/picons-source/1-build-servicelist.sh
-```
-
-
-If all goes well, you'll end up with a new file located in the folder `/tmp/picons-source/build-output`, similar to the files [servicelist-enigma2-snp](https://raw.githubusercontent.com/picons/picons-samples/master/servicelist-enigma2-snp) and [servicelist-enigma2-srp](https://raw.githubusercontent.com/picons/picons-samples/master/servicelist-enigma2-srp).
-
-To start the actual building process of the picons, use the following command:
-```
-/tmp/picons-source/2-build-picons.sh
+cd /tmp/picons-source
+./1-build-servicelist.sh
+./2-build-picons.sh
 ```
 
-Take a look at the folder `/tmp/picons-source/build-output` for the binaries.
+Take a look at the folder [build-output](https://github.com/picons/picons-source#build-output) for the results.
 
 TIP: To automate the building process, you can also use some of the following commands:
 
@@ -108,22 +102,25 @@ Example:
 
 ## build-output
 
-This folder will contain the output from the build. A folder or two and one or more files like:
+This folder will contain the output from the build. Similar to the files [servicelist-enigma2-snp](https://raw.githubusercontent.com/picons/picons-samples/master/servicelist-enigma2-snp) and [servicelist-enigma2-srp](https://raw.githubusercontent.com/picons/picons-samples/master/servicelist-enigma2-srp). The picon binaries are also saved in this folder.
 
+Possible output files and folders:
 ```
 binaries-snp/
 binaries-srp/
 servicelist-enigma2-snp
 servicelist-enigma2-srp
-servicelist-tvheadend-snp
-servicelist-tvheadend-srp
+servicelist-tvheadend-filemode-snp
+servicelist-tvheadend-filemode-srp
+servicelist-tvheadend-servermode-snp
+servicelist-tvheadend-servermode-srp
 servicelist-vdr-snp
 servicelist-vdr-srp
 ```
 
 ## build-source
 
-This is where all the channel logos go and how they are linked to the serviceref or a simplified version of the name.
+This is where all the channel logos go and how they are linked to the serviceref or a simplified version of the name. Backgrounds and the default `backgrounds.conf` file can also be found in this directory.
 
 ## resources/tools
 
