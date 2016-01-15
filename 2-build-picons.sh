@@ -17,7 +17,7 @@ if [[ ! -z $missingcommands ]]; then
     echo "imagemagick pngquant binutils librsvg2-bin (Ubuntu)"
     echo "imagemagick pngquant binutils rsvg (Cygwin)"
     read -p "Press any key to exit..." -n1 -s
-    exit
+    exit 1
 fi
 
 ##############################################
@@ -25,10 +25,12 @@ fi
 ##############################################
 if [[ -z $1 ]]; then
     echo "Which style are you going to build?"
-    select choice in "Service Reference" "Service Name"; do
+    select choice in "Service Reference" "Service Reference (Full)" "Service Name" "Service Name (Full)"; do
         case $choice in
             "Service Reference" ) style=srp; break;;
+            "Service Reference (Full)" ) style=srp-full; break;;
             "Service Name" ) style=snp; break;;
+            "Service Name (Full)" ) style=snp-full; break;;
         esac
     done
 else
@@ -53,11 +55,9 @@ if [[ $style = "srp" ]] || [[ $style = "snp" ]]; then
         if [[ ! -f $file ]]; then
             echo "No $style servicelist has been found! Exiting..."
             read -p "Press any key to exit..." -n1 -s
-            exit
+            exit 1
         fi
     done
-else
-    echo "You are using an unsupported style! Keep it tidy!"
 fi
 
 ############################################################

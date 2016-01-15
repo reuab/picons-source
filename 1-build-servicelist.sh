@@ -13,7 +13,7 @@ done
 if [[ ! -z $missingcommands ]]; then
     echo "The following commands are not found: $missingcommands"
     read -p "Press any key to exit..." -n1 -s
-    exit
+    exit 1
 fi
 
 ##############################################
