@@ -145,16 +145,18 @@ grep -v -e '^#' -e '^$' $backgroundsconf | while read lines ; do
             logotype=default
         fi
 
+        echo $logoname.$logotype >> $logfile
+
         if [[ -f $location/build-source/logos/$logoname.$logotype.svg ]]; then
             logo=$temp/cache/$logoname.$logotype.png
             if [[ ! -f $logo ]]; then
                 rsvg-convert -w 1000 -h 1000 -a -f png -o $logo $location/build-source/logos/$logoname.$logotype.svg
+                #inkscape --without-gui -w 850 --export-area-drawing --file=$location/build-source/logos/$logoname.$logotype.svg --export-png=$logo >> $logfile
             fi
         else
             logo=$location/build-source/logos/$logoname.$logotype.png
         fi
 
-        echo $logoname.$logotype >> $logfile
         convert $location/build-source/backgrounds/$resolution/$background.png \( $logo -background none -bordercolor none -border 100 -trim -border 1% -resize $resize -gravity center -extent $resolution +repage \) -layers merge - 2>> $logfile | pngquant - 2>> $logfile > $temp/package/picon/logos/$logoname.png
     done
 
