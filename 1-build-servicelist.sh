@@ -1,18 +1,33 @@
 #!/bin/bash
 
+#####################
+## Setup locations ##
+#####################
+location=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+logfile=$(mktemp --suffix=.servicelist.log)
+
+echo -e "\nLog file located at: $logfile\n"
+
 ########################################################
 ## Search for required commands and exit if not found ##
 ########################################################
-commands=( sed grep column cat sort find echo rm wc iconv awk printf pwd mktemp )
+commands=( sed grep column cat sort find rm wc iconv awk printf )
 
-for i in "${commands[@]}"; do
+for i in ${commands[@]}; do
     if ! which $i &> /dev/null; then
         missingcommands="$i $missingcommands"
     fi
 done
 if [[ ! -z $missingcommands ]]; then
-    echo "The following commands are not found: $missingcommands"
-    read -p "Press any key to exit..." -n1 -s
+    echo "ERROR: The following commands are not found: $missingcommands" >> $logfile
+    exit 1
+fi
+
+###########################
+## Check path for spaces ##
+###########################
+if [[ $location == *" "* ]]; then
+    echo "ERROR: The path contains spaces, please move the repository to a path without spaces!" >> $logfile
     exit 1
 fi
 
@@ -29,24 +44,27 @@ if [[ -z $1 ]]; then
     done
 else
     style=$1
+    if [[ ! $style = "srp" ]] && [[ ! $style = "snp" ]]; then
+        echo "ERROR: Unknown style!" >> $logfile
+        exit 1
+    fi
 fi
 
-#####################################
-## Setup file and folder locations ##
-#####################################
-location=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+#####################
+## Read index file ##
+#####################
 index=$(<"$location/build-source/$style-index")
 
 ##################################
 ## Enigma2 servicelist creation ##
 ##################################
 if [[ -d $location/build-input/enigma2 ]]; then
-    file="$location/build-output/servicelist-enigma2-$style"
+    file=$location/build-output/servicelist-enigma2-$style
     tempfile=$(mktemp --suffix=.servicelist)
     lamedb=$(<"$location/build-input/enigma2/lamedb")
     channelcount=$(cat "$location/build-input/enigma2/"*bouquet.* | grep -o '#SERVICE .*:0:.*:.*:.*:.*:.*:0:0:0' | sort -u | wc -l)
 
-    cat "$location/build-input/enigma2/"*bouquet.* | grep -o '#SERVICE .*:0:.*:.*:.*:.*:.*:0:0:0' | sed -e 's/#SERVICE //g' -e 's/.*/\U&\E/' -e 's/:/_/g' | sort -u | while read serviceref ; do
+    cat $location/build-input/enigma2/*bouquet.* | grep -o '#SERVICE .*:0:.*:.*:.*:.*:.*:0:0:0' | sed -e 's/#SERVICE //g' -e 's/.*/\U&\E/' -e 's/:/_/g' | sort -u | while read serviceref ; do
         ((currentline++))
         echo -ne "Enigma2: Converting channel: $currentline/$channelcount"\\r
 
@@ -63,14 +81,14 @@ if [[ -d $location/build-input/enigma2 ]]; then
             if [[ -z $snpname ]]; then snpname="--------"; fi
             logo_snp=$(grep -i -m 1 "^$snpname=" <<< "$index" | sed -n -e 's/.*=//p')
             if [[ -z $logo_snp ]]; then logo_snp="--------"; fi
-            echo -e "$serviceref\t$channelname\t$serviceref_id=$logo_srp\t$snpname=$logo_snp" >> "$tempfile"
+            echo -e "$serviceref\t$channelname\t$serviceref_id=$logo_srp\t$snpname=$logo_snp" >> $tempfile
         else
-            echo -e "$serviceref\t$channelname\t$serviceref_id=$logo_srp" >> "$tempfile"
+            echo -e "$serviceref\t$channelname\t$serviceref_id=$logo_srp" >> $tempfile
         fi
     done
 
-    sort -t $'\t' -k 2,2 "$tempfile" | sed -e 's/\t/§|/g' | column -t -s $'§' | sed -e 's/|/  |  /g' > "$file"
-    rm "$tempfile"
+    sort -t $'\t' -k 2,2 "$tempfile" | sed -e 's/\t/§|/g' | column -t -s $'§' | sed -e 's/|/  |  /g' > $file
+    rm $tempfile
     echo "Enigma2: Exported to $file"
 else
     echo "Enigma2: $location/build-input/enigma2 not found"
@@ -80,11 +98,11 @@ fi
 ## TvHeadend servicelist creation (from config files) ##
 ########################################################
 if [[ -d $location/build-input/tvheadend ]]; then
-    file="$location/build-output/servicelist-tvheadend-filemode-$style"
+    file=$location/build-output/servicelist-tvheadend-filemode-$style
     tempfile=$(mktemp --suffix=.servicelist)
     channelcount=$(find "$location/build-input/tvheadend/channel/config/" -maxdepth 1 -type f | wc -l)
 
-    for channelfile in "$location/build-input/tvheadend/channel/config/"* ; do
+    for channelfile in $location/build-input/tvheadend/channel/config/* ; do
         ((currentline++))
         echo -ne "TvHeadend (file-mode): Converting channel: $currentline/$channelcount"\\r
 
@@ -102,14 +120,14 @@ if [[ -d $location/build-input/tvheadend ]]; then
             if [[ -z $snpname ]]; then snpname="--------"; fi
             logo_snp=$(grep -i -m 1 "^$snpname=" <<< "$index" | sed -n -e 's/.*=//p')
             if [[ -z $logo_snp ]]; then logo_snp="--------"; fi
-            echo -e "$serviceref\t$channelname\t$serviceref_id=$logo_srp\t$snpname=$logo_snp" >> "$tempfile"
+            echo -e "$serviceref\t$channelname\t$serviceref_id=$logo_srp\t$snpname=$logo_snp" >> $tempfile
         else
-            echo -e "$serviceref\t$channelname\t$serviceref_id=$logo_srp" >> "$tempfile"
+            echo -e "$serviceref\t$channelname\t$serviceref_id=$logo_srp" >> $tempfile
         fi
     done
 
-    sort -t $'\t' -k 2,2 "$tempfile" | sed -e 's/\t/§|/g' | column -t -s $'§' | sed -e 's/|/  |  /g' > "$file"
-    rm "$tempfile"
+    sort -t $'\t' -k 2,2 "$tempfile" | sed -e 's/\t/§|/g' | column -t -s $'§' | sed -e 's/|/  |  /g' > $file
+    rm $tempfile
     echo "TvHeadend (file-mode): Exported to $file"
 else
     echo "TvHeadend (file-mode): $location/build-input/tvheadend not found"
@@ -132,10 +150,10 @@ if [[ -f $location/build-input/tvheadend.serverconf ]]; then
     TVH_PASS=""
 
     # ...replace default credentials by those configured in file
-    source "$location/build-input/tvheadend.serverconf"
+    source $location/build-input/tvheadend.serverconf
 
     # ...set file name for the service list to generate
-    file="$location/build-output/servicelist-tvheadend-servermode-$style"
+    file=$location/build-output/servicelist-tvheadend-servermode-$style
     tempfile=$(mktemp --suffix=.servicelist)
 
     # ...the server url
@@ -171,14 +189,14 @@ if [[ -f $location/build-input/tvheadend.serverconf ]]; then
                 if [[ -z $snpname ]]; then snpname="--------"; fi
                 logo_snp=$(grep -i -m 1 "^$snpname=" <<< "$index" | sed -n -e 's/.*=//p')
                 if [[ -z $logo_snp ]]; then logo_snp="--------"; fi
-                echo -e "$serviceref\t$channelname\t$serviceref_id=$logo_srp\t$snpname=$logo_snp" >> "$tempfile"
+                echo -e "$serviceref\t$channelname\t$serviceref_id=$logo_srp\t$snpname=$logo_snp" >> $tempfile
             else
-                echo -e "$serviceref\t$channelname\t$serviceref_id=$logo_srp" >> "$tempfile"
+                echo -e "$serviceref\t$channelname\t$serviceref_id=$logo_srp" >> $tempfile
             fi
         done
 
-        sort -t $'\t' -k 2,2 "$tempfile" | sed -e 's/\t/§|/g' | column -t -s $'§' | sed -e 's/|/  |  /g' > "$file"
-        rm "$tempfile"
+        sort -t $'\t' -k 2,2 "$tempfile" | sed -e 's/\t/§|/g' | column -t -s $'§' | sed -e 's/|/  |  /g' > $file
+        rm $tempfile
         echo "TvHeadend (server-mode): Exported to $file"
     else
         echo "TvHeadend (server-mode): \"${TVH_HOST}\" is not reachable or has no channels."
@@ -191,11 +209,11 @@ fi
 ## VDR servicelist creation ##
 ##############################
 if [[ -f $location/build-input/channels.conf ]]; then
-    file="$location/build-output/servicelist-vdr-$style"
+    file=$location/build-output/servicelist-vdr-$style
     tempfile=$(mktemp --suffix=.servicelist)
     channelcount=$(grep -o '.*:.*:.*:.*:.*:.*:.*:.*:.*:.*:.*:.*:0' "$location/build-input/channels.conf" | sort -u | wc -l)
 
-    grep -o '.*:.*:.*:.*:.*:.*:.*:.*:.*:.*:.*:.*:0' "$location/build-input/channels.conf" | sort -u | while read channel ; do
+    grep -o '.*:.*:.*:.*:.*:.*:.*:.*:.*:.*:.*:.*:0' $location/build-input/channels.conf | sort -u | while read channel ; do
         ((currentline++))
         echo -ne "VDR: Converting channel: $currentline/$channelcount"\\r
 
@@ -233,25 +251,17 @@ if [[ -f $location/build-input/channels.conf ]]; then
             if [[ -z $snpname ]]; then snpname="--------"; fi
             logo_snp=$(grep -i -m 1 "^$snpname=" <<< "$index" | sed -n -e 's/.*=//p')
             if [[ -z $logo_snp ]]; then logo_snp="--------"; fi
-            echo -e "$serviceref\t$channelname\t$serviceref_id=$logo_srp\t$snpname=$logo_snp" >> "$tempfile"
+            echo -e "$serviceref\t$channelname\t$serviceref_id=$logo_srp\t$snpname=$logo_snp" >> $tempfile
         else
-            echo -e "$serviceref\t$channelname\t$serviceref_id=$logo_srp" >> "$tempfile"
+            echo -e "$serviceref\t$channelname\t$serviceref_id=$logo_srp" >> $tempfile
         fi
     done
 
-    sort -t $'\t' -k 2,2 "$tempfile" | sed -e 's/\t/§|/g' | column -t -s $'§' | sed -e 's/|/  |  /g' > "$file"
-    rm "$tempfile"
+    sort -t $'\t' -k 2,2 "$tempfile" | sed -e 's/\t/§|/g' | column -t -s $'§' | sed -e 's/|/  |  /g' > $file
+    rm $tempfile
     echo "VDR: Exported to $file"
 else
     echo "VDR: $location/build-input/channels.conf not found"
 fi
 
-##########################
-## Ask the user to exit ##
-##########################
-if [[ -z $1 ]]; then
-    read -p "Press any key to exit..." -n1 -s
-fi
-
-echo -e "\n"
 exit 0
