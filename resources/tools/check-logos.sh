@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd "$1"
+cd $1
 
 for file in * ; do
     if [[ ! -f ${file%.*.*}.default.png ]] && [[ ! -f ${file%.*.*}.default.svg ]]; then
