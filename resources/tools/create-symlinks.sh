@@ -4,7 +4,7 @@ location="$1"
 temp="$2"
 style="$3"
 
-mkdir -p "$temp/symlinks"
+mkdir -p $temp/symlinks
 
 #####################################################
 ## Create symlinks for SNP & SRP using servicelist ##

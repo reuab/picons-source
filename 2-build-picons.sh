@@ -95,13 +95,13 @@ echo "$(date +'%H:%M:%S') - Checking logos"
 ## Create symlinks ##
 #####################
 echo "$(date +'%H:%M:%S') - Creating symlinks"
-"$buildtools/create-symlinks.sh" "$location" "$temp" "$style"
+"$buildtools/create-symlinks.sh" "$location" $temp $style
 
 ####################################################################
 ## Start the actual conversion to picons and creation of packages ##
 ####################################################################
 logocount=$(readlink $temp/symlinks/* | sed -e 's/logos\///g' -e 's/.png//g' | sort -u | wc -l)
-mkdir -p "$temp/cache"
+mkdir -p $temp/cache
 
 if [[ -f "$location/build-input/backgrounds.conf" ]]; then
     backgroundsconf="$location/build-input/backgrounds.conf"
@@ -120,13 +120,13 @@ grep -v -e '^#' -e '^$' $backgroundsconf | while read lines ; do
 
     resolution=${line[0]}
     resize=${line[1]}
-    logotype=${line[2]}
+    type=${line[2]}
     background=${line[3]}
 
-    packagenamenoversion="$style.$resolution-$resize.$logotype.on.$background"
-    packagename="$style.$resolution-$resize.$logotype.on.${background}_${version}"
+    packagenamenoversion="$style.$resolution-$resize.$type.on.$background"
+    packagename="$style.$resolution-$resize.$type.on.${background}_${version}"
 
-    mkdir -p "$temp/finalpicons/picon/logos"
+    mkdir -p $temp/package/picon/logos
 
     echo "$(date +'%H:%M:%S') -----------------------------------------------------------"
     echo "$(date +'%H:%M:%S') - Creating picons: $packagenamenoversion"
@@ -135,33 +135,29 @@ grep -v -e '^#' -e '^$' $backgroundsconf | while read lines ; do
         ((currentlogo++))
         echo -ne "           Converting logo: $currentlogo/$logocount"\\r
 
-        if [[ -f $buildsource/logos/$logoname.$logotype.png ]]; then
-            logo="$buildsource/logos/$logoname.$logotype.png"
+        if [[ -f $buildsource/logos/$logoname.$type.png ]] || [[ -f $buildsource/logos/$logoname.$type.svg ]]; then
+            logotype=$type
         else
-            logo="$buildsource/logos/$logoname.default.png"
-            if [[ -f $buildsource/logos/$logoname.default.svg ]]; then
-                if [[ ! -f $temp/cache/$logoname.default.png ]]; then
-                    for file in "$buildsource/logos/$logoname"*.svg; do
-                        filename=${file##*/}
-                        rsvg-convert -w 1000 -h 1000 -a -f png -o $temp/cache/${filename%.*}.png "$file"
-                    done
-                fi
-                if [[ -f $temp/cache/$logoname.$logotype.png ]]; then
-                    logo="$temp/cache/$logoname.$logotype.png"
-                else
-                    logo="$temp/cache/$logoname.default.png"
-                fi
-            fi
+            logotype=default
         fi
 
-        #echo "$logo" >> $logfile
-        convert "$buildsource/backgrounds/$resolution/$background.png" \( "$logo" -background none -bordercolor none -border 100 -trim -border 1% -resize $resize -gravity center -extent $resolution +repage \) -layers merge - 2>> $logfile | pngquant - 2>> $logfile > "$temp/finalpicons/picon/logos/$logoname.png"
+        if [[ -f $buildsource/logos/$logoname.$logotype.svg ]]; then
+            logo=$temp/cache/$logoname.$logotype.png
+            if [[ ! -f $logo ]]; then
+                rsvg-convert -w 1000 -h 1000 -a -f png -o $logo $buildsource/logos/$logoname.$logotype.svg
+            fi
+        else
+            logo=$buildsource/logos/$logoname.$logotype.png
+        fi
+
+        echo $logoname.$logotype >> $logfile
+        convert "$buildsource/backgrounds/$resolution/$background.png" \( "$logo" -background none -bordercolor none -border 100 -trim -border 1% -resize $resize -gravity center -extent $resolution +repage \) -layers merge - 2>> $logfile | pngquant - 2>> $logfile > $temp/package/picon/logos/$logoname.png
     done
 
     echo "$(date +'%H:%M:%S') - Creating binary packages: $packagenamenoversion"
-    cp --no-dereference "$temp/symlinks/"* "$temp/finalpicons/picon"
+    cp --no-dereference $temp/symlinks/* $temp/package/picon
 
-    mkdir "$temp/finalpicons/CONTROL" ; cat > "$temp/finalpicons/CONTROL/control" <<-EOF
+    mkdir $temp/package/CONTROL ; cat > $temp/package/CONTROL/control <<-EOF
 		Package: enigma2-plugin-picons-$packagenamenoversion
 		Version: $version
 		Section: base
@@ -175,15 +171,15 @@ grep -v -e '^#' -e '^$' $backgroundsconf | while read lines ; do
 		Priority: optional
 	EOF
 
-    find "$temp/finalpicons" -exec touch --no-dereference -t "$timestamp" {} \;
+    find $temp/package -exec touch --no-dereference -t "$timestamp" {} \;
 
-    "$buildtools/ipkg-build.sh" -o root -g root "$temp/finalpicons" "$binaries" >> $logfile
-    mv "$temp/finalpicons/picon" "$temp/finalpicons/$packagename"
-    tar --dereference --owner=root --group=root -cf - --directory="$temp/finalpicons" "$packagename" --exclude="logos" | xz -9 --extreme --memlimit=40% 2>> $logfile > "$binaries/$packagename.hardlink.tar.xz"
-    tar --owner=root --group=root -cf - --directory="$temp/finalpicons" "$packagename" | xz -9 --extreme --memlimit=40% 2>> $logfile > "$binaries/$packagename.symlink.tar.xz"
+    "$buildtools/ipkg-build.sh" -o root -g root $temp/package "$binaries" >> $logfile
+    mv $temp/package/picon $temp/package/$packagename
+    tar --dereference --owner=root --group=root -cf - --directory=$temp/package $packagename --exclude="logos" | xz -9 --extreme --memlimit=40% 2>> $logfile > "$binaries/$packagename.hardlink.tar.xz"
+    tar --owner=root --group=root -cf - --directory=$temp/package $packagename | xz -9 --extreme --memlimit=40% 2>> $logfile > "$binaries/$packagename.symlink.tar.xz"
 
     find "$binaries" -exec touch -t "$timestamp" {} \;
-    rm -rf "$temp/finalpicons"
+    rm -rf $temp/package
 done
 
 #############################################################################
@@ -198,7 +194,7 @@ fi
 ######################################
 ## Cleanup temporary files and exit ##
 ######################################
-if [[ -d $temp ]]; then rm -rf "$temp"; fi
+if [[ -d $temp ]]; then rm -rf $temp; fi
 
 echo -e "\n"
 exit 0
