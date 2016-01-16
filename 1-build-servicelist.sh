@@ -44,10 +44,14 @@ if [[ -z $1 ]]; then
     done
 else
     style=$1
-    if [[ ! $style = "srp" ]] && [[ ! $style = "snp" ]]; then
-        echo "ERROR: Unknown style!" >> $logfile
-        exit 1
-    fi
+fi
+
+#############################
+## Check if style is valid ##
+#############################
+if [[ ! $style = "srp" ]] && [[ ! $style = "snp" ]]; then
+    echo "ERROR: Unknown style!" >> $logfile
+    exit 1
 fi
 
 #####################
