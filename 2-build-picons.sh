@@ -3,7 +3,7 @@
 ########################################################
 ## Search for required commands and exit if not found ##
 ########################################################
-commands=( convert pngquant rsvg-convert ar tar xz sed grep tr column cat sort find echo mkdir chmod rm cp mv ln pwd basename mktemp )
+commands=( convert pngquant rsvg-convert ar tar xz sed grep tr column cat sort find echo mkdir chmod rm cp mv ln pwd mktemp readlink )
 
 for i in "${commands[@]}"; do
     if ! which $i &> /dev/null; then
@@ -91,22 +91,17 @@ echo "$(date +'%H:%M:%S') - Checking index"
 echo "$(date +'%H:%M:%S') - Checking logos"
 "$buildtools/check-logos.sh" "$buildsource/logos"
 
-#############################################################
-## Create symlinks, copy required logos and convert to png ##
-#############################################################
-echo "$(date +'%H:%M:%S') - Creating symlinks and copying logos"
-"$buildtools/create-symlinks+copy-logos.sh" "$location/build-output/servicelist-" "$temp/newbuildsource" "$buildsource" "$style" "$location"
-
-echo "$(date +'%H:%M:%S') - Converting svg files"
-for file in "$temp/newbuildsource/logos/"*.svg; do
-    rsvg-convert -w 1000 -h 1000 -a -f png -o ${file%.*}.png "$file"
-    rm "$file"
-done
+#####################
+## Create symlinks ##
+#####################
+echo "$(date +'%H:%M:%S') - Creating symlinks"
+"$buildtools/create-symlinks.sh" "$location" "$temp" "$style"
 
 ####################################################################
 ## Start the actual conversion to picons and creation of packages ##
 ####################################################################
-logocount=$(find "$temp/newbuildsource/logos/" -maxdepth 1 -type f | wc -l)
+logocount=$(readlink $temp/symlinks/* | sed -e 's/logos\///g' -e 's/.png//g' | sort -u | wc -l)
+mkdir -p "$temp/cache"
 
 if [[ -f "$location/build-input/backgrounds.conf" ]]; then
     backgroundsconf="$location/build-input/backgrounds.conf"
@@ -136,23 +131,35 @@ grep -v -e '^#' -e '^$' $backgroundsconf | while read lines ; do
     echo "$(date +'%H:%M:%S') -----------------------------------------------------------"
     echo "$(date +'%H:%M:%S') - Creating picons: $packagenamenoversion"
 
-    for logo in "$temp/newbuildsource/logos/"*.default.png ; do
+    readlink $temp/symlinks/* | sed -e 's/logos\///g' -e 's/.png//g' | sort -u | while read logoname ; do
         ((currentlogo++))
         echo -ne "           Converting logo: $currentlogo/$logocount"\\r
 
-        logoname=$(basename ${logo%.*.*})
-
-        if [[ -f $temp/newbuildsource/logos/$logoname.$logotype.png ]]; then
-            logo="$temp/newbuildsource/logos/$logoname.$logotype.png"
+        if [[ -f $buildsource/logos/$logoname.$logotype.png ]]; then
+            logo="$buildsource/logos/$logoname.$logotype.png"
+        else
+            logo="$buildsource/logos/$logoname.default.png"
+            if [[ -f $buildsource/logos/$logoname.default.svg ]]; then
+                if [[ ! -f $temp/cache/$logoname.default.png ]]; then
+                    for file in "$buildsource/logos/$logoname"*.svg; do
+                        filename=${file##*/}
+                        rsvg-convert -w 1000 -h 1000 -a -f png -o $temp/cache/${filename%.*}.png "$file"
+                    done
+                fi
+                if [[ -f $temp/cache/$logoname.$logotype.png ]]; then
+                    logo="$temp/cache/$logoname.$logotype.png"
+                else
+                    logo="$temp/cache/$logoname.default.png"
+                fi
+            fi
         fi
 
         #echo "$logo" >> $logfile
         convert "$buildsource/backgrounds/$resolution/$background.png" \( "$logo" -background none -bordercolor none -border 100 -trim -border 1% -resize $resize -gravity center -extent $resolution +repage \) -layers merge - 2>> $logfile | pngquant - 2>> $logfile > "$temp/finalpicons/picon/logos/$logoname.png"
-        #cat "$buildsource/backgrounds/$resolution/$background.png" | git lfs smudge 2>> $logfile | convert - \( "$logo" -background none -bordercolor none -border 100 -trim -border 1% -resize $resize -gravity center -extent $resolution +repage \) -layers merge - 2>> $logfile | pngquant - 2>> $logfile > "$temp/finalpicons/picon/logos/$logoname.png"
     done
 
     echo "$(date +'%H:%M:%S') - Creating binary packages: $packagenamenoversion"
-    cp --no-dereference "$temp/newbuildsource/symlinks/"* "$temp/finalpicons/picon"
+    cp --no-dereference "$temp/symlinks/"* "$temp/finalpicons/picon"
 
     mkdir "$temp/finalpicons/CONTROL" ; cat > "$temp/finalpicons/CONTROL/control" <<-EOF
 		Package: enigma2-plugin-picons-$packagenamenoversion
@@ -170,7 +177,7 @@ grep -v -e '^#' -e '^$' $backgroundsconf | while read lines ; do
 
     find "$temp/finalpicons" -exec touch --no-dereference -t "$timestamp" {} \;
 
-    "$buildtools/ipkg-build.sh" -o root -g root "$temp/finalpicons" "$binaries" > /dev/null
+    "$buildtools/ipkg-build.sh" -o root -g root "$temp/finalpicons" "$binaries" >> $logfile
     mv "$temp/finalpicons/picon" "$temp/finalpicons/$packagename"
     tar --dereference --owner=root --group=root -cf - --directory="$temp/finalpicons" "$packagename" --exclude="logos" | xz -9 --extreme --memlimit=40% 2>> $logfile > "$binaries/$packagename.hardlink.tar.xz"
     tar --owner=root --group=root -cf - --directory="$temp/finalpicons" "$packagename" | xz -9 --extreme --memlimit=40% 2>> $logfile > "$binaries/$packagename.symlink.tar.xz"
@@ -179,19 +186,19 @@ grep -v -e '^#' -e '^$' $backgroundsconf | while read lines ; do
     rm -rf "$temp/finalpicons"
 done
 
-################################################################################
-## Cleanup temporary files and let the user know the location of the packages ##
-################################################################################
-if [[ -d $temp ]]; then rm -rf "$temp"; fi
-
+#############################################################################
+## Let the user know the location of the packages and ask the user to exit ##
+#############################################################################
 echo -e "\nThe binary packages are located in:\n$binaries\n"
 
-##########################
-## Ask the user to exit ##
-##########################
 if [[ -z $1 ]]; then
     read -p "Press any key to exit..." -n1 -s
 fi
+
+######################################
+## Cleanup temporary files and exit ##
+######################################
+if [[ -d $temp ]]; then rm -rf "$temp"; fi
 
 echo -e "\n"
 exit 0
