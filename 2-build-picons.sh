@@ -12,7 +12,7 @@ echo -e "\nLog file located at: $logfile\n"
 ########################################################
 ## Search for required commands and exit if not found ##
 ########################################################
-commands=( convert pngquant rsvg-convert ar tar xz sed grep tr column cat sort find mkdir rm cp mv ln readlink )
+commands=( convert pngquant ar tar xz sed grep tr column cat sort find mkdir rm cp mv ln readlink )
 
 for i in ${commands[@]}; do
     if ! which $i &> /dev/null; then
@@ -21,8 +21,18 @@ for i in ${commands[@]}; do
 done
 if [[ ! -z $missingcommands ]]; then
     echo "ERROR: The following commands are not found: $missingcommands" >> $logfile
-    echo "ERROR: Try installing on Ubuntu: imagemagick pngquant binutils librsvg2-bin" >> $logfile
-    echo "ERROR: Try installing on Cygwin: imagemagick pngquant binutils rsvg" >> $logfile
+    echo "ERROR: Try installing: imagemagick pngquant binutils" >> $logfile
+    exit 1
+fi
+
+if which "inkscape" &> /dev/null && [[ -f $location/build-input/svgconverter.inkscape ]]; then
+    svgconverter="inkscape -w 850 --without-gui --export-area-drawing --export-png="
+elif which "rsvg-convert" &> /dev/null; then
+    svgconverter="rsvg-convert -w 1000 --keep-aspect-ratio --output "
+else
+    echo "ERROR: No SVG converter has been found!" >> $logfile
+    echo "ERROR: Try installing on Ubuntu: librsvg2-bin (or: inkscape)" >> $logfile
+    echo "ERROR: Try installing on Cygwin: rsvg (or: inkscape)" >> $logfile
     exit 1
 fi
 
@@ -150,8 +160,7 @@ grep -v -e '^#' -e '^$' $backgroundsconf | while read lines ; do
         if [[ -f $location/build-source/logos/$logoname.$logotype.svg ]]; then
             logo=$temp/cache/$logoname.$logotype.png
             if [[ ! -f $logo ]]; then
-                rsvg-convert -w 1000 -h 1000 -a -f png -o $logo $location/build-source/logos/$logoname.$logotype.svg
-                #inkscape --without-gui -w 850 --export-area-drawing --file=$location/build-source/logos/$logoname.$logotype.svg --export-png=$logo >> $logfile
+                $svgconverter$logo $location/build-source/logos/$logoname.$logotype.svg >> $logfile
             fi
         else
             logo=$location/build-source/logos/$logoname.$logotype.png
