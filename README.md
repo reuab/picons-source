@@ -1,5 +1,3 @@
-[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/picons/picons-source.svg)](http://isitmaintained.com/project/picons/picons-source "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/picons/picons-source.svg)](http://isitmaintained.com/project/picons/picons-source "Percentage of issues still open")
-
 # ABOUT
 
 All the full resolution channel logos and their link to the actual channel (=serviceref) are kept up2date in this repository. The end result are picons for Enigma2 tuners and Kodi mediacenter in combination with a compatible PVR backend.
