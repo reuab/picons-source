@@ -13,6 +13,10 @@ echo -e "\nLog file located at: $logfile\n"
 ########################################################
 commands=( sed grep column cat sort find rm wc iconv awk printf )
 
+if [[ -f $location/build-input/tvheadend.serverconf ]]; then
+    commands=( $commands jq curl )
+fi
+
 for i in ${commands[@]}; do
     if ! which $i &> /dev/null; then
         missingcommands="$i $missingcommands"
@@ -141,12 +145,6 @@ fi
 ## TvHeadend servicelist creation (from server API) ##
 ######################################################
 if [[ -f $location/build-input/tvheadend.serverconf ]]; then
-    # check if the following required programs are installed
-    # - curl    - command line tool for transferring data with URL syntax
-    # - jq      - lightweight and flexible command-line JSON processor
-    command -v jq   >/dev/null 2>&1 || { echo >&2 "TvHeadend (server-mode): This script uses the command \"jq\" but it's not installed. Aborting."; exit 1; }
-    command -v curl >/dev/null 2>&1 || { echo >&2 "TvHeadend (server-mode): This script uses the command \"curl\" but it's not installed. Aborting."; exit 1; }
-
     # ...set default credentials for tvh server
     TVH_HOST="localhost"
     TVH_PORT="9981"
