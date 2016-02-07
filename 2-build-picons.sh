@@ -83,9 +83,8 @@ mkdir $binaries
 ##############################
 ## Determine version number ##
 ##############################
-cd $location
-
 if [[ -d $location/.git ]] && which git &> /dev/null; then
+    cd $location
     hash=$(git rev-parse --short HEAD)
     version=$(date --date=@$(git show -s --format=%ct $hash) +'%Y-%m-%d--%H-%M-%S')
     timestamp=$(date --date=@$(git show -s --format=%ct $hash) +'%Y%m%d%H%M.%S')
